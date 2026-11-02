@@ -5,7 +5,7 @@
 
 所有计算都在你自己的浏览器里完成——序列不会上传到任何服务器，页面加载后断网也能用。
 
-**在线使用：<https://haomiaoyan.github.io/synteny/>**
+**在线使用：<https://haomiaoyan.github.io/Synteny-pro/>**
 
 ![点阵图](docs/screenshot.png)
 

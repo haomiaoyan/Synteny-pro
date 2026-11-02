@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "description": "Dot-plot genome comparison that runs entirely in your browser.",
   "license": "MIT",
-  "homepage": "https://haomiaoyan.github.io/synteny/",
+  "homepage": "https://haomiaoyan.github.io/Synteny-pro/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/haomiaoyan/synteny.git"
+    "url": "https://github.com/haomiaoyan/Synteny-pro.git"
   },
   "engines": {
     "node": ">=20"
