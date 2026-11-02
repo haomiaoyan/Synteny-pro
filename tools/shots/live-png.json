@@ -1,0 +1,55 @@
+{
+  "beforeRun": {
+    "pngDisabled": true,
+    "csvDisabled": true,
+    "label": "导出 PNG"
+  },
+  "afterRun": {
+    "pngDisabled": false,
+    "plotW": 842,
+    "plotH": 842,
+    "theme": null
+  },
+  "dark": {
+    "w": 1684,
+    "h": 1823,
+    "bytes": 165711,
+    "corner": [
+      13,
+      11,
+      9
+    ],
+    "plotInk": 25811,
+    "captionInk": 13095,
+    "footerInk": 5405
+  },
+  "paper": {
+    "w": 1684,
+    "h": 1823,
+    "bytes": 169388,
+    "corner": [
+      250,
+      247,
+      240
+    ],
+    "plotInk": 26056,
+    "captionInk": 13985,
+    "footerInk": 5627
+  },
+  "themeAfter": "paper",
+  "english": {
+    "w": 1684,
+    "h": 1823,
+    "bytes": 153033,
+    "corner": [
+      250,
+      247,
+      240
+    ],
+    "plotInk": 26056,
+    "captionInk": 9846,
+    "footerInk": 5844
+  },
+  "englishCaptionChars": 141,
+  "errs": []
+}

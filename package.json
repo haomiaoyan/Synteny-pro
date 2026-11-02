@@ -1,0 +1,28 @@
+{
+  "name": "synteny",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Dot-plot genome comparison that runs entirely in your browser.",
+  "license": "MIT",
+  "homepage": "https://haomiaoyan.github.io/synteny/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/haomiaoyan/synteny.git"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  }
+}

@@ -1,0 +1,9 @@
+file:///D:/ai%E9%A1%B9%E7%9B%AE%EF%BC%88%E8%87%AA%E7%94%A8%EF%BC%89/synteny/tools/interaction-test.mjs:72
+    if (r.exceptionDetails) throw new Error(JSON.stringify(r.exceptionDetails).slice(0, 300));
+                                  ^
+
+Error: {"exceptionId":1,"text":"Uncaught","lineNumber":5,"columnNumber":27,"scriptId":"22","stackTrace":{"callFrames":[{"functionName":"","scriptId":"22","url":"","lineNumber":5,"columnNumber":27},{"functionName":"","scriptId":"22","url":"","lineNumber":8,"columnNumber":2}]},"exception":{"type":"object","s
+    at Cdp.eval (file:///D:/ai%E9%A1%B9%E7%9B%AE%EF%BC%88%E8%87%AA%E7%94%A8%EF%BC%89/synteny/tools/interaction-test.mjs:72:35)
+    at async file:///D:/ai%E9%A1%B9%E7%9B%AE%EF%BC%88%E8%87%AA%E7%94%A8%EF%BC%89/synteny/tools/interaction-test.mjs:145:17
+
+Node.js v24.20.0

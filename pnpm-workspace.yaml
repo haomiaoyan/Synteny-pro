@@ -1,0 +1,4 @@
+# pnpm 10+ 默认不执行依赖的安装脚本，而 esbuild 需要它来放置平台二进制。
+# 这个文件只影响 pnpm；npm 会忽略它，CI 用的是 npm。
+allowBuilds:
+  esbuild: true

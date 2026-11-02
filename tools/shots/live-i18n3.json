@@ -1,0 +1,36 @@
+{
+  "zhMatchesBaseline": true,
+  "emptyMatchesBaseline": true,
+  "zhChars": 1785,
+  "langBtnVisibleAtLoad": {
+    "present": true,
+    "hidden": false,
+    "display": "block",
+    "visible": true,
+    "waitedMs": 0
+  },
+  "enCjkLeft": 1,
+  "enLeftover": [
+    "中"
+  ],
+  "enTitle": "Synteny — two genomes, one picture",
+  "enLangAttr": "en / en",
+  "enTh": [
+    "Block",
+    "Type",
+    "Reference",
+    "Query",
+    "Length",
+    "Ident"
+  ],
+  "enBtn": "中",
+  "enHidden": false,
+  "zhAfterToggleBack": true,
+  "zhTitleBack": "Synteny — 把两个基因组画成一张图",
+  "firstDiff": null,
+  "emptyLen": {
+    "was": 1197,
+    "now": 1197
+  },
+  "emptyFirstDiff": null
+}

@@ -1,0 +1,1020 @@
+/* =========================================================================
+   Synteny — 墨版样式
+   纸张在墨上。衬线标题，等宽数据，一个暖橙作为唯一强调色。
+   ========================================================================= */
+
+:root {
+  --ink: #12100d;
+  --ink2: #181510;
+  --ink3: #0d0b09;
+  --paper: #ece7dc;
+  --paper-dim: #c9c2b3;
+  --mute: #9a9285;
+  --faint: #6b6459;
+  --rule: #2c2822;
+  --rule2: #3a352d;
+  --accent: #c2410c;
+  --accent-soft: #e08c5a;
+  --amber: #d9a441;
+  --ok: #7d9b6a;
+  --err: #d1614a;
+  /* 点阵图里「噪声」种子的颜色。画布颜色也由 CSS 变量驱动，
+     所以主题换色时图和页面不会脱节。 */
+  --dot-noise: #968d7f;
+  /* 悬停读数浮层的底色。不能用 --ink3：浅色主题下会变成一块黑方块。 */
+  --readout-bg: rgba(13, 11, 9, .95);
+  color-scheme: dark;
+}
+
+/* =========================================================================
+   四套主题
+   名字沿用墨版的 ink（页面底色）/ paper（正文色），换到浅色主题时两者反转。
+   朱色 #c2410c 四套都不变——它是这个站点的身份色，换掉整套设计就散了。
+   每套都把自己需要的灰阶重新配过：浅底上原样搬用深色的灰会看不见。
+   ========================================================================= */
+
+[data-theme="paper"] {
+  --ink: #f4f1ea;
+  --ink2: #efeae0;
+  --ink3: #faf7f0;
+  --paper: #1d1a16;
+  --paper-dim: #4a4438;
+  --mute: #6b6355;
+  --faint: #857b6b;
+  --rule: #d9d1c1;
+  --rule2: #b3a894;
+  --accent: #c2410c;
+  --accent-soft: #9c4416;
+  --amber: #8a6410;
+  --ok: #4e6b3a;
+  --err: #a83a24;
+  --dot-noise: #8a8172;
+  --readout-bg: rgba(250, 247, 240, .96);
+  color-scheme: light;
+}
+
+[data-theme="indigo"] {
+  --ink: #0e1420;
+  --ink2: #141b29;
+  --ink3: #0a0f18;
+  --paper: #e8e6df;
+  --paper-dim: #bcc2cb;
+  --mute: #8b95a3;
+  --faint: #636c79;
+  --rule: #222b3a;
+  --rule2: #2f3a4d;
+  --accent: #c2410c;
+  --accent-soft: #e08c5a;
+  --amber: #d9a441;
+  --ok: #7d9b6a;
+  --err: #d1614a;
+  --dot-noise: #8b93a0;
+  --readout-bg: rgba(10, 15, 24, .95);
+  color-scheme: dark;
+}
+
+[data-theme="moss"] {
+  --ink: #101410;
+  --ink2: #161a16;
+  --ink3: #0b0e0b;
+  --paper: #e6e6d8;
+  --paper-dim: #c0c3b6;
+  --mute: #8e9283;
+  --faint: #666b5e;
+  --rule: #262b23;
+  --rule2: #333a30;
+  --accent: #c2410c;
+  --accent-soft: #e08c5a;
+  --amber: #d9a441;
+  --ok: #8aa874;
+  --err: #d1614a;
+  --dot-noise: #93977f;
+  --readout-bg: rgba(11, 14, 11, .95);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "PingFang SC", Georgia, serif;
+  font-size: 16px;
+  line-height: 1.8;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 英文换成拉丁优先的衬线。
+   中文衬线排在前面时，英文也会落到宋体上——宋体的西文又窄又小，
+   整段英文读起来像注脚。这不是"翻译完顺手换个字体"，是换排版。 */
+[data-lang="en"] body {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Charter, Georgia, serif;
+  line-height: 1.72;
+}
+
+/* 极淡纸纹，压在内容之下；纯装饰，不参与布局 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .028;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>");
+}
+
+.wrap { position: relative; z-index: 1; }
+
+a { color: inherit; text-decoration: none; }
+
+.mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+
+.page { max-width: 1080px; margin: 0 auto; padding: 0 40px; }
+
+/* ---------------- masthead ---------------- */
+.mast { padding: 30px 0 0; }
+
+.mast-top {
+  display: flex;
+  align-items: baseline;
+  gap: 18px;
+  padding-bottom: 12px;
+  border-bottom: 3px solid var(--paper);
+}
+
+/* 页眉右上角的一行控件：仓库、语言、配色。
+   尺寸与字重都跟着 issue 走，读起来是刊头的元信息，不是应用的工具条。 */
+.ctrls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  font-size: 13px;
+  letter-spacing: .01em;
+}
+
+.ctrl {
+  font: inherit;
+  letter-spacing: inherit;
+  color: var(--mute);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: color .15s;
+}
+
+.ctrl:hover { color: var(--accent-soft); }
+
+/* 键盘用户必须看得见焦点；鼠标用户不该看见描边。 */
+.ctrl:focus-visible,
+.sw-b:focus-visible {
+  outline: 1px solid var(--accent-soft);
+  outline-offset: 3px;
+}
+
+.sw { display: flex; gap: 7px; }
+
+/* 每个色块是它那套主题的两色对角切分：左上为页面底色，右下为正文色。
+   一眼能看出是深是浅，又不用把整页染成那个颜色去预览。 */
+.sw-b {
+  width: 11px;
+  height: 11px;
+  padding: 0;
+  border: 1px solid var(--rule2);
+  border-radius: 50%;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--sw-ink) 0 50%, var(--sw-paper) 50% 100%);
+  transition: box-shadow .15s;
+}
+
+.sw-b[data-sw="ink"]    { --sw-ink: #12100d; --sw-paper: #ece7dc; }
+.sw-b[data-sw="paper"]  { --sw-ink: #f4f1ea; --sw-paper: #1d1a16; }
+.sw-b[data-sw="indigo"] { --sw-ink: #0e1420; --sw-paper: #e8e6df; }
+.sw-b[data-sw="moss"]   { --sw-ink: #101410; --sw-paper: #e6e6d8; }
+
+.sw-b[aria-pressed="true"] {
+  border-color: var(--accent-soft);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.mast-top h1 {
+  font-size: 33px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1;
+}
+
+.mast-top .desc {
+  font-size: 13px;
+  color: var(--mute);
+  letter-spacing: .02em;
+  padding-bottom: 3px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+}
+
+.mast-top .spacer { flex: 1; }
+
+.mast-top .issue {
+  text-align: right;
+  font-size: 11px;
+  line-height: 1.6;
+  color: var(--faint);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  letter-spacing: .02em;
+}
+
+.subnav {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 11px 0;
+  font-size: 13px;
+  color: var(--mute);
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  letter-spacing: .02em;
+}
+
+.subnav a:hover { color: var(--accent-soft); }
+
+.subnav .on { color: var(--paper); position: relative; }
+
+.subnav .on::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  height: 2px;
+  background: var(--accent);
+}
+
+.subnav .r { margin-left: auto; color: var(--faint); font-size: 11.5px; }
+
+/* ---------------- title ---------------- */
+.head { padding: 64px 0 0; }
+
+/* 标题独占整行；动画画布已移除，首屏改为真实点阵图 */
+.hero {
+  display: block;
+}
+
+.glyph {
+  flex: 0 0 auto;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 30px;
+  /* 画布本身透明，点阵直接落在页面上，没有黑色方块 */
+  opacity: 0;
+  animation: glyph-in .001ms linear .55s forwards;
+}
+
+@keyframes glyph-in { to { opacity: 1; } }
+
+h2.title {
+  font-size: clamp(38px, 5.6vw, 72px);
+  line-height: 1.18;
+  letter-spacing: -.012em;
+  font-weight: 700;
+  margin: 0 0 28px;
+  text-wrap: balance;
+}
+
+h2.title .thin { color: var(--paper-dim); font-weight: 400; }
+
+p.standfirst {
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--paper-dim);
+  margin: 0 0 40px;
+  max-width: 34em;
+  letter-spacing: .004em;
+}
+
+p.standfirst b { color: var(--paper); font-weight: 600; }
+
+/* =========================================================================
+   首屏点阵图
+   页面加载后自动跑一次真实比对，把结果画进这块画布。
+   目的：访客不点任何按钮，就能看到这工具到底产出什么。
+   ========================================================================= */
+
+.hero-fig {
+  margin: 0 0 8px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 300px);
+  gap: 40px;
+  align-items: stretch;
+}
+
+/* 点阵图本身是正方形（引擎按 min(w,h) 绘制），
+   所以画布也给正方形，避免右侧出现大片空白。
+   限宽 520px：再大就会把首屏挤满，反而看不出下面还有工具。 */
+.hero-plot {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: var(--ink2);
+  border-radius: 2px;
+  /* 出图后淡入，避免从空白闪到满屏点 */
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+
+.hero-plot.ready { opacity: 1; }
+
+/* 图例竖排，贴在画布右侧；用内容把整列填满，避免右侧出现大片空白 */
+.hero-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-top: 2px;
+  font-size: 14px;
+  color: var(--paper-dim);
+  letter-spacing: .01em;
+}
+
+.lg-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--paper);
+  margin-bottom: 18px;
+}
+
+.lg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.lg-item {
+  display: grid;
+  grid-template-columns: 8px 3.2em 1fr;
+  align-items: center;
+  gap: 10px;
+  line-height: 1.45;
+}
+
+.lg-item em {
+  font-style: normal;
+  color: var(--mute);
+  font-size: 13px;
+}
+
+.lg-meta {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--paper-dim);
+  line-height: 1.7;
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+}
+
+.lg-note {
+  margin: 18px 0 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--faint);
+  max-width: 26em;
+}
+
+@media (max-width: 760px) {
+  .hero-fig {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .hero-legend {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    font-size: 12.5px;
+  }
+  .lg-meta { margin-top: 0; width: 100%; }
+}
+
+
+.lg-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.lg-col { background: var(--paper); }
+.lg-inv { background: var(--amber); }
+.lg-trn { background: var(--accent-soft); }
+
+
+p.standfirst b { color: var(--paper); font-weight: 600; }
+
+/* 四条规格用色块分隔，不用 1px 细线。
+   细线是「AI 生成页面」的典型装饰，改成一块比页面略亮的底。 */
+.specstrip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  background: var(--rule);
+  margin-top: 44px;
+}
+
+.spec { padding: 14px 18px 16px; background: var(--ink); }
+
+/* 标签不再是 10px 大写 + 字距：那是「AI 味」的典型标记。
+   改成正常句式的 13px 正文灰。 */
+.spec .k {
+  font-size: 13px;
+  color: var(--mute);
+  margin-bottom: 6px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+}
+
+.spec .v {
+  font-size: 15px;
+  color: var(--paper);
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.005em;
+}
+
+.spec .v small { color: var(--mute); font-size: 13px; }
+
+/* ---------------- file slots ---------------- */
+.io {
+  display: grid;
+  grid-template-columns: 1fr 24px 1fr;
+  gap: 0;
+  align-items: stretch;
+  margin-top: 40px;
+}
+
+.slot {
+  position: relative;
+  border: 1px solid var(--rule2);
+  background: var(--ink2);
+  padding: 16px 18px 18px;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease;
+  min-height: 96px;
+  display: flex;
+  flex-direction: column;
+}
+
+.slot:hover { border-color: #4a4438; background: #1c1812; }
+
+.slot.drag { border-color: var(--accent-soft); background: rgba(194, 65, 12, .08); }
+
+.slot.filled { border-color: #4a4438; }
+
+.slot-h { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
+
+.slot .tag {
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  font-family: -apple-system, sans-serif;
+}
+
+.slot .slot-k {
+  font-size: 10px;
+  letter-spacing: .1em;
+  color: var(--faint);
+  font-family: ui-monospace, Menlo, monospace;
+  text-transform: uppercase;
+}
+
+.slot-body { margin-top: auto; }
+
+.slot-name {
+  font-size: 15px;
+  color: var(--paper);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  letter-spacing: -0.01em;
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+.slot-name.empty { color: var(--faint); }
+
+.slot-meta {
+  font-size: 11.5px;
+  color: var(--faint);
+  margin-top: 5px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+}
+
+.io .x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--faint);
+  font-size: 15px;
+  font-family: ui-monospace, monospace;
+}
+
+/* ---------------- buttons ---------------- */
+.go {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 2px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: .03em;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  border: 1px solid var(--accent);
+  cursor: pointer;
+  transition: background .18s ease;
+}
+
+.btn:hover:not(:disabled) { background: #a83609; }
+
+.btn:disabled { opacity: .38; cursor: not-allowed; }
+
+.btn2 { background: transparent; border-color: var(--rule2); color: var(--paper); }
+
+.btn2:hover:not(:disabled) { background: rgba(236, 231, 220, .05); border-color: #4a4438; }
+
+.go .hint {
+  font-size: 12px;
+  color: var(--faint);
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  flex: 1;
+  min-width: 240px;
+  line-height: 1.6;
+}
+
+.go .hint.busy { color: var(--accent-soft); }
+
+.go .hint.err { color: var(--err); }
+
+/* ---------------- advanced ---------------- */
+.adv {
+  margin-top: 14px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.adv > label { cursor: pointer; user-select: none; display: inline-flex; gap: 7px; align-items: center; }
+
+.adv input[type="checkbox"] { accent-color: var(--accent); }
+
+.adv-body {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  padding: 12px 14px;
+  border-left: 2px solid var(--rule2);
+}
+
+.adv-body label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  color: var(--mute);
+}
+
+.adv-body input[type="number"] {
+  width: 62px;
+  background: var(--ink3);
+  border: 1px solid var(--rule2);
+  color: var(--paper);
+  padding: 5px 7px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 12px;
+  border-radius: 2px;
+}
+
+.adv-body input[type="number"]:focus { outline: 1px solid var(--accent-soft); border-color: var(--accent-soft); }
+
+.adv-note { font-size: 11.5px; color: var(--faint); line-height: 1.6; }
+
+/* ---------------- figure ---------------- */
+figure { margin: 30px 0 0; }
+
+.fig-outer {
+  border: 1px solid var(--rule2);
+  background: var(--ink2);
+  padding: 1px;
+  position: relative;
+}
+
+.fig-bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 11.5px;
+  color: var(--mute);
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+}
+
+.fig-bar .dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--faint);
+  opacity: .9;
+  flex: none;
+  transition: background .2s ease;
+}
+
+.fig-bar .dot.ready { background: var(--ok); }
+
+.fig-bar .dot.busy { background: var(--amber); animation: pulse 1s ease-in-out infinite; }
+
+@keyframes pulse { 50% { opacity: .25; } }
+
+.fig-bar .right { margin-left: auto; display: flex; gap: 16px; color: var(--faint); font-size: 11px; }
+
+.fig-bar .right b { color: var(--mute); font-weight: 500; }
+
+/* Zoom readout. Doubles as the reset control, because the number that tells
+   you that you are zoomed in is the number you want to click to get back. */
+.zoomchip {
+  font: inherit;
+  font-size: 10.5px;
+  line-height: 1;
+  color: var(--accent-soft);
+  background: transparent;
+  border: 1px solid rgba(224, 140, 90, .34);
+  border-radius: 3px;
+  padding: 2px 5px;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.zoomchip:hover {
+  background: rgba(224, 140, 90, .10);
+  border-color: rgba(224, 140, 90, .55);
+  color: var(--paper);
+}
+
+.zoomchip:focus-visible { outline: 1px solid var(--accent-soft); outline-offset: 2px; }
+
+.fig-grid {
+  display: grid;
+  grid-template-columns: 26px 1fr 128px;
+  background: var(--ink2);
+}
+
+.ylab {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  border-right: 1px solid var(--rule);
+  font-family: -apple-system, sans-serif;
+}
+
+.plotbox { position: relative; aspect-ratio: 1; background: var(--ink3); }
+
+canvas { display: block; width: 100%; height: 100%; }
+
+.empty {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  padding: 24px;
+  pointer-events: none;
+}
+
+.empty-t {
+  font-size: 15px;
+  color: var(--mute);
+  font-family: -apple-system, "PingFang SC", sans-serif;
+}
+
+.empty-s {
+  font-size: 12px;
+  color: var(--faint);
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  max-width: 26em;
+  line-height: 1.7;
+}
+
+.empty.hidden { display: none; }
+
+/* 悬停读数 */
+.readout {
+  position: absolute;
+  z-index: 3;
+  pointer-events: none;
+  background: var(--readout-bg);
+  border: 1px solid var(--rule2);
+  padding: 7px 10px;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  line-height: 1.65;
+  color: var(--paper-dim);
+  white-space: nowrap;
+  border-radius: 2px;
+  transform: translate(12px, 12px);
+}
+
+.readout b { color: var(--paper); font-weight: 500; }
+
+/* 拖拽缩放时的选框 */
+.dragging {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+  border: 1px solid rgba(236, 231, 220, .55);
+  background: rgba(236, 231, 220, .07);
+  border-radius: 1px;
+}
+
+.side {
+  border-left: 1px solid var(--rule);
+  padding: 16px 14px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+}
+
+.side .h {
+  font-size: 9.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 12px;
+}
+
+.lg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 0;
+  font-size: 11.5px;
+  color: var(--mute);
+  border-bottom: 1px solid rgba(44, 40, 34, .5);
+}
+
+.lg:last-child { border-bottom: none; }
+
+.lg s { width: 14px; height: 2px; display: block; flex: none; text-decoration: none; }
+
+.lg .v {
+  margin-left: auto;
+  font-family: ui-monospace, Menlo, monospace;
+  font-size: 11px;
+  color: var(--paper-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.side .divider { height: 1px; background: var(--rule); margin: 14px 0 12px; }
+
+.side .mini { font-size: 10.5px; line-height: 1.7; color: var(--faint); }
+
+.xaxis {
+  border-top: 1px solid var(--rule);
+  padding: 8px 14px;
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  font-family: -apple-system, sans-serif;
+}
+
+figcaption {
+  margin-top: 16px;
+  font-size: 13px;
+  line-height: 1.78;
+  color: var(--mute);
+  max-width: 52em;
+}
+
+figcaption b { color: var(--paper-dim); font-weight: 600; }
+
+figcaption .n {
+  font-family: -apple-system, sans-serif;
+  font-weight: 700;
+  color: var(--accent-soft);
+  margin-right: .5em;
+  letter-spacing: .02em;
+}
+
+figcaption em { color: var(--paper-dim); font-style: italic; }
+
+/* ---------------- body grid ---------------- */
+.body-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.06fr);
+  gap: 56px;
+  margin-top: 60px;
+  align-items: start;
+}
+
+.prose p { margin: 0 0 18px; color: var(--paper-dim); font-size: 15.5px; line-height: 1.86; }
+
+.prose h3 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--paper);
+  letter-spacing: .02em;
+  margin: 32px 0 12px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+}
+
+.prose h3:first-child { margin-top: 0; }
+
+.prose .dropcap {
+  float: left;
+  font-size: 54px;
+  line-height: .82;
+  padding: 8px 12px 0 0;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.prose code {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  color: var(--paper);
+  background: rgba(236, 231, 220, .07);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+.data .dh {
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  margin-bottom: 6px;
+  font-family: -apple-system, sans-serif;
+}
+
+.data .dcap {
+  font-size: 12px;
+  color: var(--faint);
+  line-height: 1.7;
+  margin-bottom: 14px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  font-size: 12.5px;
+}
+
+thead th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--mute);
+  border-top: 2px solid var(--paper);
+  border-bottom: 1px solid var(--rule2);
+  padding: 9px 7px;
+  position: sticky;
+  top: 0;
+  background: var(--ink);
+}
+
+tbody td {
+  padding: 8px 7px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--paper-dim);
+  white-space: nowrap;
+}
+
+tbody tr:hover td { background: rgba(236, 231, 220, .035); }
+
+tbody tr.sel td { background: rgba(194, 65, 12, .1); }
+
+tbody tr:last-child td { border-bottom: 2px solid var(--paper); }
+
+tbody tr.empt td { color: var(--faint); text-align: center; padding: 22px 0; border-bottom: 2px solid var(--paper); }
+
+td.n {
+  text-align: right;
+  font-family: ui-monospace, Menlo, monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--paper);
+}
+
+td.id { font-family: ui-monospace, Menlo, monospace; color: var(--paper); }
+
+.mark {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 7px;
+  vertical-align: 0;
+}
+
+.m-col { background: var(--paper); }
+
+.m-inv { background: var(--amber); }
+
+.m-tr { background: transparent; border: 1.5px solid var(--accent-soft); }
+
+.data-foot { margin-top: 14px; display: flex; justify-content: flex-end; }
+
+.link {
+  background: none;
+  border: none;
+  color: var(--accent-soft);
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px 0;
+  border-bottom: 1px solid transparent;
+}
+
+.link:hover:not(:disabled) { border-bottom-color: var(--accent-soft); }
+
+.link:disabled { color: var(--faint); cursor: not-allowed; }
+
+.note {
+  grid-column: 1 / -1;
+  margin-top: 52px;
+  padding: 22px 26px;
+  background: rgba(194, 65, 12, .07);
+  border-left: 3px solid var(--accent);
+  font-size: 14px;
+  line-height: 1.82;
+  color: var(--paper-dim);
+}
+
+.note b {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 10.5px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent-soft);
+  font-family: -apple-system, sans-serif;
+}
+
+footer {
+  margin-top: 64px;
+  padding: 22px 0 72px;
+  border-top: 1px solid var(--rule2);
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+  color: var(--faint);
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  letter-spacing: .02em;
+}
+
+footer .right { margin-left: auto; display: flex; gap: 18px; }
+
+footer a:hover { color: var(--accent-soft); }
+
+/* ---------------- responsive ---------------- */
+@media (max-width: 920px) {
+  .page { padding: 0 22px; }
+  .body-grid { grid-template-columns: 1fr; gap: 40px; }
+  .specstrip { grid-template-columns: 1fr 1fr; }
+  .spec:nth-child(2) { border-right: none; }
+  .spec:nth-child(1), .spec:nth-child(2) { border-bottom: 1px solid var(--rule); }
+  .fig-grid { grid-template-columns: 1fr; }
+  .ylab, .side { display: none; }
+  .glyph { display: none; }
+  .mast-top { flex-wrap: wrap; }
+  .mast-top .issue { text-align: left; }
+  .io { grid-template-columns: 1fr; gap: 10px; }
+  .io .x { height: 14px; }
+  .adv-body { gap: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}

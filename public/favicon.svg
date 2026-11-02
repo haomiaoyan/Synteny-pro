@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Synteny">
+  <rect width="32" height="32" rx="7" fill="#12100d"/>
+  <!-- 主对角线：共线区段（query 与 ref 同向） -->
+  <line x1="5.5" y1="26.5" x2="26.5" y2="5.5"
+        stroke="#ece7dc" stroke-width="2.5" stroke-linecap="round"
+        stroke-dasharray="0.1 3.7"/>
+  <!-- 反对角线：倒位（query 与 ref 反向） -->
+  <line x1="5" y1="5" x2="11.5" y2="11.5"
+        stroke="#c2410c" stroke-width="2.1" stroke-linecap="round"
+        stroke-dasharray="0.1 3.0"/>
+</svg>
