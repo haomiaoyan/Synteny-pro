@@ -10,7 +10,7 @@
   --paper: #ece7dc;
   --paper-dim: #c9c2b3;
   --mute: #9a9285;
-  --faint: #6b6459;
+  --faint: #8a8274;
   --rule: #2c2822;
   --rule2: #3a352d;
   --accent: #c2410c;
@@ -40,7 +40,7 @@
   --paper: #1d1a16;
   --paper-dim: #4a4438;
   --mute: #6b6355;
-  --faint: #857b6b;
+  --faint: #736a5c;
   --rule: #d9d1c1;
   --rule2: #b3a894;
   --accent: #c2410c;
@@ -60,7 +60,7 @@
   --paper: #e8e6df;
   --paper-dim: #bcc2cb;
   --mute: #8b95a3;
-  --faint: #636c79;
+  --faint: #87909d;
   --rule: #222b3a;
   --rule2: #2f3a4d;
   --accent: #c2410c;
@@ -80,7 +80,7 @@
   --paper: #e6e6d8;
   --paper-dim: #c0c3b6;
   --mute: #8e9283;
-  --faint: #666b5e;
+  --faint: #8a8f81;
   --rule: #262b23;
   --rule2: #333a30;
   --accent: #c2410c;
@@ -97,12 +97,23 @@
 
 html { -webkit-text-size-adjust: 100%; }
 
+/* 锚点跳转要落到吸顶导航之下，否则目标标题会贴到视口顶上被压掉。 */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 104px;
+}
+
+/* 「减少动效」下不滚，直接跳——平滑滚动本身也是一次长位移。 */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
 body {
   margin: 0;
   background: var(--ink);
   color: var(--paper);
   font-family: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", "PingFang SC", Georgia, serif;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.8;
   -webkit-font-smoothing: antialiased;
 }
@@ -221,7 +232,7 @@ a { color: inherit; text-decoration: none; }
 
 .mast-top .issue {
   text-align: right;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.6;
   color: var(--faint);
   font-family: ui-monospace, Menlo, Consolas, monospace;
@@ -253,7 +264,7 @@ a { color: inherit; text-decoration: none; }
   background: var(--accent);
 }
 
-.subnav .r { margin-left: auto; color: var(--faint); font-size: 11.5px; }
+.subnav .r { margin-left: auto; color: var(--faint); font-size: 13px; }
 
 /* ---------------- title ---------------- */
 
@@ -546,19 +557,16 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
 .slot-h { display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px; }
 
 .slot .tag {
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--accent-soft);
   font-family: -apple-system, sans-serif;
 }
 
 .slot .slot-k {
-  font-size: 10px;
-  letter-spacing: .1em;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--faint);
-  font-family: ui-monospace, Menlo, monospace;
-  text-transform: uppercase;
 }
 
 .slot-body { margin-top: auto; }
@@ -575,7 +583,7 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
 .slot-name.empty { color: var(--faint); }
 
 .slot-meta {
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--faint);
   margin-top: 5px;
   font-family: -apple-system, "PingFang SC", sans-serif;
@@ -623,7 +631,7 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
 .btn2:hover:not(:disabled) { background: rgba(236, 231, 220, .05); border-color: #4a4438; }
 
 .go .hint {
-  font-size: 12px;
+  font-size: 13px;
   color: var(--faint);
   font-family: -apple-system, "PingFang SC", sans-serif;
   flex: 1;
@@ -639,7 +647,7 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
 .adv {
   margin-top: 14px;
   font-family: -apple-system, "PingFang SC", sans-serif;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--faint);
 }
 
@@ -662,7 +670,7 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
   align-items: center;
   gap: 7px;
   font-family: ui-monospace, Menlo, monospace;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--mute);
 }
 
@@ -673,13 +681,13 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
   color: var(--paper);
   padding: 5px 7px;
   font-family: ui-monospace, Menlo, monospace;
-  font-size: 12px;
+  font-size: 13px;
   border-radius: 2px;
 }
 
 .adv-body input[type="number"]:focus { outline: 1px solid var(--accent-soft); border-color: var(--accent-soft); }
 
-.adv-note { font-size: 11.5px; color: var(--faint); line-height: 1.6; }
+.adv-note { font-size: 13px; color: var(--faint); line-height: 1.6; }
 
 /* ---------------- figure ---------------- */
 figure { margin: 30px 0 0; }
@@ -697,7 +705,7 @@ figure { margin: 30px 0 0; }
   gap: 14px;
   padding: 9px 14px;
   border-bottom: 1px solid var(--rule);
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--mute);
   font-family: ui-monospace, Menlo, Consolas, monospace;
 }
@@ -718,7 +726,7 @@ figure { margin: 30px 0 0; }
 
 @keyframes pulse { 50% { opacity: .25; } }
 
-.fig-bar .right { margin-left: auto; display: flex; gap: 16px; color: var(--faint); font-size: 11px; }
+.fig-bar .right { margin-left: auto; display: flex; gap: 16px; color: var(--faint); font-size: 13px; }
 
 .fig-bar .right b { color: var(--mute); font-weight: 500; }
 
@@ -726,7 +734,7 @@ figure { margin: 30px 0 0; }
    you that you are zoomed in is the number you want to click to get back. */
 .zoomchip {
   font: inherit;
-  font-size: 10.5px;
+  font-size: 13px;
   line-height: 1;
   color: var(--accent-soft);
   background: transparent;
@@ -757,9 +765,8 @@ figure { margin: 30px 0 0; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--faint);
   border-right: 1px solid var(--rule);
   font-family: -apple-system, sans-serif;
@@ -789,7 +796,7 @@ canvas { display: block; width: 100%; height: 100%; }
 }
 
 .empty-s {
-  font-size: 12px;
+  font-size: 13.5px;
   color: var(--faint);
   font-family: -apple-system, "PingFang SC", sans-serif;
   max-width: 26em;
@@ -807,7 +814,7 @@ canvas { display: block; width: 100%; height: 100%; }
   border: 1px solid var(--rule2);
   padding: 7px 10px;
   font-family: ui-monospace, Menlo, monospace;
-  font-size: 11px;
+  font-size: 13px;
   line-height: 1.65;
   color: var(--paper-dim);
   white-space: nowrap;
@@ -834,9 +841,8 @@ canvas { display: block; width: 100%; height: 100%; }
 }
 
 .side .h {
-  font-size: 9.5px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--faint);
   margin-bottom: 12px;
 }
@@ -846,7 +852,7 @@ canvas { display: block; width: 100%; height: 100%; }
   align-items: center;
   gap: 8px;
   padding: 5px 0;
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--mute);
   border-bottom: 1px solid rgba(44, 40, 34, .5);
 }
@@ -858,7 +864,7 @@ canvas { display: block; width: 100%; height: 100%; }
 .lg .v {
   margin-left: auto;
   font-family: ui-monospace, Menlo, monospace;
-  font-size: 11px;
+  font-size: 13px;
   color: var(--paper-dim);
   font-variant-numeric: tabular-nums;
 }
@@ -869,11 +875,10 @@ canvas { display: block; width: 100%; height: 100%; }
 
 .xaxis {
   border-top: 1px solid var(--rule);
-  padding: 8px 14px;
+  padding: 9px 14px;
   text-align: center;
-  font-size: 10px;
-  letter-spacing: .16em;
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--faint);
   font-family: -apple-system, sans-serif;
 }
@@ -907,14 +912,23 @@ figcaption em { color: var(--paper-dim); font-style: italic; }
   align-items: start;
 }
 
-.prose p { margin: 0 0 18px; color: var(--paper-dim); font-size: 15.5px; line-height: 1.86; }
+/* 行宽是本页最要命的一处：正文此前跑到约 133 字符一行，眼睛要横扫屏幕。
+   68ch 落在 45–75 的舒适区里，配合 17px 的正文字号，段落才读得下去。
+   max-width 用 ch 而不是 px：换到英文衬线时字符更宽，ch 会自己收窄。 */
+.prose p {
+  margin: 0 0 20px;
+  color: var(--paper-dim);
+  font-size: 17px;
+  line-height: 1.78;
+  max-width: 68ch;
+}
 
 .prose h3 {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--paper);
-  letter-spacing: .02em;
-  margin: 32px 0 12px;
+  letter-spacing: .01em;
+  margin: 36px 0 14px;
   font-family: -apple-system, "PingFang SC", sans-serif;
 }
 
@@ -939,16 +953,15 @@ figcaption em { color: var(--paper-dim); font-style: italic; }
 }
 
 .data .dh {
-  font-size: 10.5px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--accent-soft);
   margin-bottom: 6px;
   font-family: -apple-system, sans-serif;
 }
 
 .data .dcap {
-  font-size: 12px;
+  font-size: 13.5px;
   color: var(--faint);
   line-height: 1.7;
   margin-bottom: 14px;
@@ -965,9 +978,8 @@ table {
 thead th {
   text-align: left;
   font-weight: 600;
-  font-size: 10px;
-  letter-spacing: .1em;
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--mute);
   border-top: 2px solid var(--paper);
   border-bottom: 1px solid var(--rule2);
@@ -1023,7 +1035,7 @@ td.id { font-family: ui-monospace, Menlo, monospace; color: var(--paper); }
   border: none;
   color: var(--accent-soft);
   font-family: -apple-system, "PingFang SC", sans-serif;
-  font-size: 12px;
+  font-size: 13.5px;
   cursor: pointer;
   padding: 4px 0;
   border-bottom: 1px solid transparent;
@@ -1047,9 +1059,8 @@ td.id { font-family: ui-monospace, Menlo, monospace; color: var(--paper); }
 .note b {
   display: block;
   margin-bottom: 7px;
-  font-size: 10.5px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0;
   color: var(--accent-soft);
   font-family: -apple-system, sans-serif;
 }
@@ -1061,10 +1072,10 @@ footer {
   display: flex;
   gap: 20px;
   flex-wrap: wrap;
-  font-size: 11.5px;
+  font-size: 13px;
   color: var(--faint);
   font-family: -apple-system, "PingFang SC", sans-serif;
-  letter-spacing: .02em;
+  letter-spacing: 0;
 }
 
 footer .right { margin-left: auto; display: flex; gap: 18px; }

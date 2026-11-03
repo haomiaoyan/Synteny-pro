@@ -143,6 +143,11 @@ const check = (id, ok, detail) => {
  * 除了逐元素的四项属性，还要看 `getAnimations()`：过渡跑到一半时计算样式
  * 可能已经回到终值（或者反过来），而正在跑的动画/过渡是「此刻确实在动」的
  * 直接证据。两者交叉，漏报的机会才小。
+ *
+ * 还要查**祖先链**。这一条是补上的漏洞：只要在 `.body-grid` 上加一次
+ * transform，两段正文就跟着整块平移，而子树内部的元素自己没变——
+ * 只查子树会判「干净」。祖先是空的话，CSS 里写多少都没关系；
+ * 祖先一旦有 transform/opacity，正文就已经不在原位了。
  */
 function d2Collect() {
   const roots = [document.getElementById("method"), document.getElementById("limits")];
@@ -192,9 +197,28 @@ function d2Collect() {
     }
   }
 
+  // 祖先链：从 #method 一路走到 <body>。任何一层挂着 transform / opacity /
+  // translate / scale / rotate，正文就已经被搬离原位了，哪怕它自己的
+  // computed style 是干净的。这条检查防的正是「在父容器上做动效」这种
+  // 绕过 D2 的写法。
+  const ancestorBad = [];
+  for (let n = roots[0].parentElement; n && n !== document.documentElement; n = n.parentElement) {
+    const cs = getComputedStyle(n);
+    const why = [];
+    for (const d of toMs(cs.transitionDuration)) if (d > 0.0001 && why.length === 0) why.push("transition-duration=" + d + "ms");
+    if (cs.transform !== "none") why.push("transform=" + cs.transform);
+    if (cs.translate && cs.translate !== "none") why.push("translate=" + cs.translate);
+    if (cs.scale && cs.scale !== "none") why.push("scale=" + cs.scale);
+    if (cs.rotate && cs.rotate !== "none") why.push("rotate=" + cs.rotate);
+    const op = parseFloat(cs.opacity);
+    if (!(op >= 0.999)) why.push("opacity=" + cs.opacity);
+    if (why.length > 0) ancestorBad.push(name(n) + " → " + why.join(", "));
+  }
+
   return {
     count: els.length,
     bad,
+    ancestorBad,
     running,
     // reveal.ts 是本轮唯一会加隐藏态的模块。两棵子树里出现 .reveal 就等于
     // 有人把入场目标扩到了正文上，无论当前透明度是多少都该拦下。
@@ -406,6 +430,20 @@ if (!err) {
     styleViolations.length === 0
       ? `${samples.length} 次采样 × ${first.count} 个元素，全部静止`
       : styleViolations.slice(0, 8).join(" | "),
+  );
+
+  // 祖先链。这条补的是一个真实的漏检：把 transform 加在 .body-grid 上时，
+  // 两段正文会整块平移，而子树内部逐元素的检查全是干净的。
+  const ancestorViolations = [];
+  for (const s of samples) {
+    for (const a of s.ancestorBad || []) ancestorViolations.push(a);
+  }
+  check(
+    "D2/祖先链无 transform/opacity",
+    ancestorViolations.length === 0,
+    ancestorViolations.length === 0
+      ? "从 #method 到 body 的每一层都不动——正文没被父容器搬走"
+      : [...new Set(ancestorViolations)].slice(0, 6).join(" | "),
   );
 }
 

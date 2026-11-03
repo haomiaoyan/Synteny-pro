@@ -15,6 +15,7 @@ import { t, lang, initLang, onLangChange } from "./i18n.js";
 import { downloadPng } from "./ui/export.js";
 import { initScrollZoom, isScrollZoomActive, onScrollZoomReset } from "./ui/scroll-zoom.js";
 import { initReveal } from "./ui/reveal.js";
+import { initSectionFlow, type RevealSection } from "./ui/section-flow.js";
 import { repaintParticlesOnce, startParticles } from "./ui/particles.js";
 
 /**
@@ -115,6 +116,25 @@ const el = {
 // 不接返回值：这一层与页面同寿，没有卸载时机。保留 teardown 是为了
 // 将来真有「关掉入场」的开关时一处就能拆干净。
 void initReveal();
+
+// 区块之间的过场：滚过工具段、方法段、不算什么段时，各自从行进方向
+// 迎上来一点，同时把子导航的激活态跟着滚动改过来。
+//
+// 作用对象是三个「视图级」容器，不是里面每个段落：给每一段都套位移，
+// 滚动时会像一叠卡片在抖动，而且和 reveal 那层逐元素入场互相打架。
+const flowSections: RevealSection[] = [];
+const anchorOf = (id: string): HTMLAnchorElement | null =>
+  document.querySelector<HTMLAnchorElement>(`.subnav a[href="#${id}"]`);
+const flowTool = document.getElementById("tool");
+const flowBody = document.querySelector<HTMLElement>(".body-grid");
+if (flowTool !== null) flowSections.push({ el: flowTool, navAnchor: anchorOf("tool") });
+// D2 硬约束：#method 与 #limits 两段正文必须完全静止，而它们就住在
+// .body-grid 里面。所以这块只联动导航，绝不施加 transform——
+// 加在父级上等于绕过了约束，正文照样在平移。
+if (flowBody !== null) {
+  flowSections.push({ el: flowBody, navAnchor: anchorOf("method"), animate: false });
+}
+void initSectionFlow(flowSections);
 
 /* --------------------------------------------------------------- helpers */
 
