@@ -9,6 +9,7 @@ import { initTheme } from "./ui/theme.js";
 import { t, lang, initLang, onLangChange } from "./i18n.js";
 import { downloadPng } from "./ui/export.js";
 import { initScrollZoom, isScrollZoomActive, onScrollZoomReset } from "./ui/scroll-zoom.js";
+import { repaintParticlesOnce, startParticles } from "./ui/particles.js";
 
 /**
  * Page controller.
@@ -1000,10 +1001,15 @@ function repaintHero(): void {
  *
  * redraw() 只管工具区的 #plot，首屏那张图不在它的视野里——这是既存的一个 bug：
  * 切完主题往下滚，首屏图还是上一套颜色。
+ *
+ * 粒子层也要在这里补一帧。用户切主题时人通常停在工具区，首屏早已滚出视口，
+ * IntersectionObserver 把帧停了；而粒子的颜色同样是 readPalette() 现读的，
+ * 没有帧在跑就一直停在旧配色上，直到用户滚回首屏才「自己变」。
  */
 function repaintAll(): void {
   redraw();
   repaintHero();
+  repaintParticlesOnce();
 }
 
 /**
@@ -1123,6 +1129,19 @@ startHeroPlot();
 
 // 换配色后必须重画：画布上的颜色是从 CSS 变量算出来的，不会自己跟着变。
 // 首屏那张图同样要重画，所以走 repaintAll。
+// 粒子层要在 initTheme 之前接上：repaintAll 里已经有 repaintParticlesOnce()，
+// 先有层才有可重画的对象。
+const particlesCanvas = document.getElementById("headParticles") as HTMLCanvasElement | null;
+if (particlesCanvas !== null) {
+  // 数量、密度、DPR、触屏降级全部在这一个调用里定，这里不传参：
+  // 默认行为（按面积算数量、响应鼠标）就是产品要的那套。
+  //
+  // 接住销毁函数却不调用：这一层跟页面同寿，没有卸载时机。保留返回值是为了
+  // 将来若真有「关掉背景层」的开关，一处就能拆干净（observer、监听、rAF 都在里面）。
+  const stopParticles = startParticles(particlesCanvas);
+  void stopParticles;
+}
+
 initTheme(repaintAll);
 
 // 首屏图的滚动缩放。没找到元素就整体跳过——首屏是锦上添花，不该拦住工具区。

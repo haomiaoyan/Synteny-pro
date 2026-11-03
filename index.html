@@ -56,6 +56,12 @@ try {
   </div>
 
   <div class="head">
+    <!-- 首屏背景粒子层：铺满整个 .head（标题区 + 图区两侧 + 图例栏），压在内容下面。
+         aria-hidden：纯装饰，没有信息量，读屏软件应当整段跳过。
+         层级与定位全部交给 CSS（.head-canvas），这里不写内联样式——
+         将来改层级就不用同时改两处。 -->
+    <canvas class="head-canvas" id="headParticles" aria-hidden="true"></canvas>
+
     <div class="hero">
       <h2 class="title" data-i18n-html="hero.title">两个基因组之间，<br><span class="thin">究竟是哪里不一样。</span></h2>
       <p class="standfirst" data-i18n-html="hero.standfirst">

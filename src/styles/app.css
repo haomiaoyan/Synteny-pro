@@ -256,7 +256,42 @@ a { color: inherit; text-decoration: none; }
 .subnav .r { margin-left: auto; color: var(--faint); font-size: 11.5px; }
 
 /* ---------------- title ---------------- */
-.head { padding: 64px 0 0; }
+
+/* 首屏（标题 + 点阵图 + 图例）是粒子层的定位上下文。
+   position: relative 只建立包含块，不改变任何布局尺寸。 */
+.head { padding: 64px 0 0; position: relative; }
+
+/* 首屏背景粒子层。
+   为什么铺在 .head 上而不是 .hero-fig 里：图区只有中间那一块，粒子塞进去
+   就只剩「几十像素缝隙里的十几个点」；而整块首屏（标题区、图区两侧、图例栏）
+   才是这层该占的面积。
+
+   为什么是 z-index: 0 而不是 -1：负层级会逃出 .head 的层叠上下文，落到
+   .wrap（app.css:129，z-index: 1）背景之下，粒子直接消失。0 配 1 才是
+   「垫在内容下面、但仍在首屏之内」。
+
+   pointer-events: none 是必须的：canvas 铺满整块首屏，不关掉命中测试，
+   图例的悬停、点阵图的缩放拖动全部会被它吞掉。
+
+   width/height 必须显式写满：canvas 是替换元素，有 300×150 的固有尺寸。
+   只写 inset: 0 时绝对定位的替换元素会用固有尺寸而不是拉伸到四边，
+   实际得到一块 300×150 的补丁——首屏上看着「有粒子」，验收时尺寸对不上。 */
+.head-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  /* 画布本身就是透明的，不需要底色；保留这句是为了说明「有底色才是错的」。 */
+  background: none;
+}
+
+/* 内容压在粒子层之上。
+   注意 .hero-fig 同时是批次二滚动缩放的目标：transform 不改变布局盒，
+   而 canvas 定位在 .head 的盒子上，所以缩放期间粒子层不会跟着动、也不会变形。 */
+.hero,
+.hero-fig { position: relative; z-index: 1; }
 
 /* 标题独占整行；动画画布已移除，首屏改为真实点阵图 */
 .hero {
