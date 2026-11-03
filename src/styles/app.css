@@ -250,6 +250,13 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: .02em;
 }
 
+/* 中文导航项不许逐字折行。窄屏上字号一提，flex 就会把「工具」压成
+   上下两个字——那不是换行，是排版事故。 */
+.subnav a {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
 .subnav a:hover { color: var(--accent-soft); }
 
 .subnav .on { color: var(--paper); position: relative; }
