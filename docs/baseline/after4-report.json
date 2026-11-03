@@ -1,7 +1,10 @@
 {
- "url": "http://localhost:5173/",
- "at": "2026-11-02T14:32:44.028Z",
- "allow": [],
+ "url": "http://localhost:4173/",
+ "at": "2026-11-03T10:25:53.302Z",
+ "allow": [
+  "palette-claude",
+  "few-pictures"
+ ],
  "viewports": [
   {
    "width": 1440,
@@ -9,17 +12,17 @@
    "load": "load",
    "screens": 5,
    "filled": [
-    0.32,
+    0.31,
     0.33,
     0.61,
     0.21,
     0.23
    ],
    "motion": {
-    "elements": 2,
+    "elements": 16,
     "css": 0,
-    "transitions": 2,
-    "scripted": 0,
+    "transitions": 15,
+    "scripted": 1,
     "videos": 0,
     "playingVideos": 0
    },
@@ -34,7 +37,7 @@
      "words": 175,
      "img": 0,
      "video": 0,
-     "canvas": 2,
+     "canvas": 3,
      "svg": 0,
      "sections": 1,
      "horizontalOverflow": 0,
@@ -373,13 +376,17 @@
      "blurred": 0,
      "roundedBoxes": 0,
      "boxRadius": 0,
-     "squareMedia": 1,
+     "squareMedia": 2,
      "roundedMedia": 1,
      "mediaRadius": 2,
      "textShadow": 0,
      "cardRows": []
     },
     "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.59
+     },
      {
       "type": "canvas",
       "ratio": 0.19
@@ -434,15 +441,15 @@
       "top": 131,
       "height": 1059,
       "words": 29,
-      "media": 1,
-      "middle": 40,
+      "media": 2,
+      "middle": 0,
       "heading": {
        "text": "两个基因组之间，",
        "size": 72,
        "tag": "h2"
       },
       "left": 220,
-      "right": 231,
+      "right": 220,
       "textLeft": 220,
       "textRight": 231,
       "fullBleed": false,
@@ -534,12 +541,12 @@
     "stage": false,
     "explains": true,
     "slivers": [],
-    "voidShare": 0.15,
+    "voidShare": 0.11,
     "voidBox": {
-     "x": 900,
+     "x": 0,
      "y": 120,
-     "w": 540,
-     "h": 360
+     "w": 180,
+     "h": 780
     }
    },
    "app": null,
@@ -551,16 +558,16 @@
    "load": "load",
    "screens": 4,
    "filled": [
-    0.37,
+    0.36,
     0.73,
     0.57,
     0.38
    ],
    "motion": {
-    "elements": 2,
+    "elements": 16,
     "css": 0,
-    "transitions": 2,
-    "scripted": 0,
+    "transitions": 15,
+    "scripted": 1,
     "videos": 0,
     "playingVideos": 0
    },
@@ -575,7 +582,7 @@
      "words": 156,
      "img": 0,
      "video": 0,
-     "canvas": 2,
+     "canvas": 3,
      "svg": 0,
      "sections": 1,
      "horizontalOverflow": 0,
@@ -904,8 +911,8 @@
      "hairlines": 6,
      "hairlineSamples": [
       "div#heroMeta.lg-meta 300px",
-      "div.spec 361px",
-      "div.spec 361px",
+      "div.spec.reveal 361px",
+      "div.spec.reveal 361px",
       "div.fig-bar 720px",
       "div#xaxis.xaxis 720px"
      ],
@@ -914,13 +921,17 @@
      "blurred": 0,
      "roundedBoxes": 0,
      "boxRadius": 0,
-     "squareMedia": 1,
+     "squareMedia": 2,
      "roundedMedia": 1,
      "mediaRadius": 2,
      "textShadow": 0,
      "cardRows": []
     },
     "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.66
+     },
      {
       "type": "canvas",
       "ratio": 0.19
@@ -975,7 +986,7 @@
       "top": 131,
       "height": 714,
       "words": 29,
-      "media": 1,
+      "media": 2,
       "middle": 0,
       "heading": {
        "text": "两个基因组之间，",
@@ -983,7 +994,7 @@
        "tag": "h2"
       },
       "left": 22,
-      "right": 33,
+      "right": 22,
       "textLeft": 22,
       "textRight": 33,
       "fullBleed": false,
@@ -1107,15 +1118,15 @@
    "screens": 5,
    "filled": [
     0.6,
+    0.38,
+    0.68,
     0.45,
-    0.64,
-    0.43,
     0.33
    ],
    "motion": {
-    "elements": 2,
+    "elements": 15,
     "css": 0,
-    "transitions": 2,
+    "transitions": 15,
     "scripted": 0,
     "videos": 0,
     "playingVideos": 0
@@ -1126,12 +1137,12 @@
      "h": 844
     },
     "page": {
-     "height": 3936,
+     "height": 3949,
      "screens": 4.7,
      "words": 156,
      "img": 0,
      "video": 0,
-     "canvas": 2,
+     "canvas": 3,
      "svg": 0,
      "sections": 1,
      "horizontalOverflow": 0,
@@ -1236,7 +1247,7 @@
       "align": "left",
       "position": "left",
       "widthRatio": 0.17,
-      "top": 2488,
+      "top": 2501,
       "tag": "span",
       "kind": "statement"
      }
@@ -1348,7 +1359,7 @@
       },
       {
        "color": "#0d0b09",
-       "top": 1963,
+       "top": 1977,
        "hsl": {
         "h": 30,
         "s": 0.18,
@@ -1469,13 +1480,17 @@
      "blurred": 0,
      "roundedBoxes": 0,
      "boxRadius": 0,
-     "squareMedia": 1,
+     "squareMedia": 2,
      "roundedMedia": 1,
      "mediaRadius": 2,
      "textShadow": 0,
      "cardRows": []
     },
     "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.68
+     },
      {
       "type": "canvas",
       "ratio": 0.31
@@ -1495,7 +1510,7 @@
      "w": 390,
      "h": 844
     },
-    "pageH": 3936,
+    "pageH": 3949,
     "margins": {
      "left": 22,
      "right": 22
@@ -1528,9 +1543,9 @@
       "sel": "div.head",
       "tag": "div",
       "top": 196,
-      "height": 957,
+      "height": 971,
       "words": 29,
-      "media": 1,
+      "media": 2,
       "middle": 0,
       "heading": {
        "text": "两个基因组之间，",
@@ -1550,7 +1565,7 @@
      {
       "sel": "div.specstrip",
       "tag": "div",
-      "top": 1197,
+      "top": 1211,
       "height": 176,
       "words": 12,
       "media": 0,
@@ -1569,7 +1584,7 @@
      {
       "sel": "section#tool",
       "tag": "section",
-      "top": 1413,
+      "top": 1426,
       "height": 479,
       "words": 19,
       "media": 0,
@@ -1588,7 +1603,7 @@
      {
       "sel": "figure#figure",
       "tag": "figure",
-      "top": 1922,
+      "top": 1935,
       "height": 506,
       "words": 15,
       "media": 1,
@@ -1607,7 +1622,7 @@
      {
       "sel": "div.body-grid",
       "tag": "div",
-      "top": 2488,
+      "top": 2501,
       "height": 1207,
       "words": 70,
       "media": 0,
@@ -1630,7 +1645,7 @@
      {
       "sel": "footer",
       "tag": "footer",
-      "top": 3758,
+      "top": 3772,
       "height": 177,
       "words": 13,
       "media": 0,
@@ -1721,17 +1736,6 @@
    ]
   },
   {
-   "level": "FAIL",
-   "id": "palette-claude",
-   "width": 1440,
-   "message": "Cream + terracotta palette (text #ece7dc, text #e08c5a).",
-   "fix": "Re-draw the palette from the library. This pairing reads as an assistant brand, not yours.",
-   "alsoAt": [
-    768,
-    390
-   ]
-  },
-  {
    "level": "WARN",
    "id": "contrast",
    "width": 1440,
@@ -1786,13 +1790,6 @@
    ]
   },
   {
-   "level": "FAIL",
-   "id": "few-pictures",
-   "width": 1440,
-   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
-   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
-  },
-  {
    "level": "WARN",
    "id": "no-footage",
    "width": 1440,
@@ -1819,52 +1816,34 @@
     768,
     390
    ]
-  },
-  {
-   "level": "WARN",
-   "id": "dev-server",
-   "width": 1440,
-   "message": "This page is served by a development server (Vite, webpack or Next in dev mode).",
-   "fix": "Run the last gate on the production build too (vite build && vite preview, next build && next start, or the built index.html): minifiers and bundlers change the CSS a visitor receives.",
-   "alsoAt": [
-    768,
-    390
-   ]
-  },
-  {
-   "level": "FAIL",
-   "id": "still-page",
-   "width": 1440,
-   "message": "Only 2 element(s) moved while the page loaded and scrolled.",
-   "fix": "Build the motion layer (SKILL.md step 9, references/motion.md): the signature move, an entrance for the parts of every section, feedback on every control, and one moving picture. Transform and opacity only, with a reduced-motion fallback."
   }
  ],
  "images": [
   {
    "viewport": "desktop",
    "width": 1440,
-   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\desktop-fold.jpg",
+   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4-final\\desktop-fold.jpg",
    "pages": [
-    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\desktop-page-01.jpg",
-    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\desktop-page-02.jpg"
+    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4-final\\desktop-page-01.jpg",
+    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4-final\\desktop-page-02.jpg"
    ],
    "film": []
   },
   {
    "viewport": "tablet",
    "width": 768,
-   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\tablet-fold.jpg",
+   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4-final\\tablet-fold.jpg",
    "pages": [
-    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\tablet-page-01.jpg"
+    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4-final\\tablet-page-01.jpg"
    ],
    "film": []
   },
   {
    "viewport": "mobile",
    "width": 390,
-   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\mobile-fold.jpg",
+   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4-final\\mobile-fold.jpg",
    "pages": [
-    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\mobile-page-01.jpg"
+    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4-final\\mobile-page-01.jpg"
    ],
    "film": []
   }

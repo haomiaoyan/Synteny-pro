@@ -1,0 +1,1872 @@
+{
+ "url": "http://localhost:5173/",
+ "at": "2026-11-02T14:32:44.028Z",
+ "allow": [],
+ "viewports": [
+  {
+   "width": 1440,
+   "height": 900,
+   "load": "load",
+   "screens": 5,
+   "filled": [
+    0.32,
+    0.33,
+    0.61,
+    0.21,
+    0.23
+   ],
+   "motion": {
+    "elements": 2,
+    "css": 0,
+    "transitions": 2,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "page": {
+     "height": 3609,
+     "screens": 4,
+     "words": 175,
+     "img": 0,
+     "video": 0,
+     "canvas": 2,
+     "svg": 0,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "两个基因组之间， 究竟是哪里不一样。",
+     "words": 2,
+     "chars": 18,
+     "lines": 2,
+     "size": 72,
+     "vw": 5,
+     "font": "Songti SC",
+     "weight": 700,
+     "tracking": -0.012,
+     "leading": 1.18,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.69,
+     "top": 195,
+     "tag": "h2",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Synteny",
+     "words": 1,
+     "lines": 1,
+     "size": 33,
+     "font": "Songti SC"
+    },
+    "headings": [
+     {
+      "text": "Synteny",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 33,
+      "vw": 2.3,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": -0.01,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.09,
+      "top": 30,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "两个基因组之间， 究竟是哪里不一样。",
+      "words": 2,
+      "chars": 18,
+      "lines": 2,
+      "size": 72,
+      "vw": 5,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": -0.012,
+      "leading": 1.18,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.69,
+      "top": 195,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "点",
+      "words": 1,
+      "chars": 1,
+      "lines": 1,
+      "size": 54,
+      "vw": 3.8,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 0.82,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.05,
+      "top": 2700,
+      "tag": "span",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 3,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Songti SC",
+       "share": 0.57,
+       "mono": false
+      },
+      {
+       "family": "-apple-system",
+       "share": 0.36,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0.07,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      19,
+      33,
+      54,
+      72
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Songti SC",
+      "size": 15.5,
+      "leading": 1.86,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 10.7
+     },
+     "measureChars": 133,
+     "max": {
+      "size": 72,
+      "vw": 5,
+      "font": "Songti SC",
+      "text": "两个基因组之间，"
+     },
+     "monoShare": 0.07,
+     "monoProseShare": 0.04,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [
+      "MIT · v0.1",
+      "Reference",
+      "未选择",
+      "×",
+      "Query",
+      "未选择"
+     ],
+     "microLabels": 15,
+     "microLabelShare": 0.055,
+     "microSamples": [
+      "参考",
+      "Reference",
+      "查询",
+      "Query",
+      "Query · Mbp",
+      "区段"
+     ],
+     "upperShare": 0.14,
+     "centerShare": 0.06,
+     "smallText": 10
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#12100d",
+     "bodyBgHsl": {
+      "h": 36,
+      "s": 0.16,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#181510",
+       "top": 530,
+       "hsl": {
+        "h": 38,
+        "s": 0.2,
+        "l": 0.08
+       }
+      },
+      {
+       "color": "#0d0b09",
+       "top": 1699,
+       "hsl": {
+        "h": 30,
+        "s": 0.18,
+        "l": 0.04
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#c9c2b3",
+       "share": 0.46
+      },
+      {
+       "color": "#6b6459",
+       "share": 0.3
+      },
+      {
+       "color": "#9a9285",
+       "share": 0.13
+      },
+      {
+       "color": "#ece7dc",
+       "share": 0.09
+      },
+      {
+       "color": "#e08c5a",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#c2410c",
+      "hsl": {
+       "h": 17,
+       "s": 0.88,
+       "l": 0.4
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Reference",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "拖入 FASTA（可 .gz），或点击选择",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 11.5,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "Query",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "拖入 FASTA（可 .gz），或点击选择",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 11.5,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "Query · Mbp",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "点密度经分箱。 仅表示结构对应， 不表示碱基一致性。",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10.5,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 0,
+     "radius": 2,
+     "height": 46,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 6,
+     "hairlineSamples": [
+      "div#heroMeta.lg-meta 300px",
+      "div.fig-bar 996px",
+      "div#ylab.ylab 26px",
+      "div.side 128px",
+      "div#xaxis.xaxis 996px"
+     ],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 1,
+     "roundedMedia": 1,
+     "mediaRadius": 2,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.19
+     }
+    ],
+    "nav": {
+     "links": 3,
+     "fixed": false,
+     "height": 45,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 1440,
+     "h": 900
+    },
+    "pageH": 3609,
+    "margins": {
+     "left": 220,
+     "right": 220
+    },
+    "sections": [
+     {
+      "sel": "div.mast",
+      "tag": "div",
+      "top": 0,
+      "height": 131,
+      "words": 15,
+      "media": 0,
+      "middle": 424,
+      "heading": {
+       "text": "Synteny",
+       "size": 33,
+       "tag": "h1"
+      },
+      "left": 220,
+      "right": 220,
+      "textLeft": 220,
+      "textRight": 220,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.head",
+      "tag": "div",
+      "top": 131,
+      "height": 1059,
+      "words": 29,
+      "media": 1,
+      "middle": 40,
+      "heading": {
+       "text": "两个基因组之间，",
+       "size": 72,
+       "tag": "h2"
+      },
+      "left": 220,
+      "right": 231,
+      "textLeft": 220,
+      "textRight": 231,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tool",
+      "tag": "section",
+      "top": 1360,
+      "height": 267,
+      "words": 19,
+      "media": 0,
+      "middle": 28,
+      "heading": null,
+      "left": 220,
+      "right": 440,
+      "textLeft": 239,
+      "textRight": 440,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "figure#figure",
+      "tag": "figure",
+      "top": 1657,
+      "height": 983,
+      "words": 28,
+      "media": 1,
+      "middle": 15,
+      "heading": null,
+      "left": 220,
+      "right": 241,
+      "textLeft": 220,
+      "textRight": 241,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.body-grid",
+      "tag": "div",
+      "top": 2700,
+      "height": 730,
+      "words": 70,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "它不算什么",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 220,
+      "right": 220,
+      "textLeft": 220,
+      "textRight": 220,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Synteny",
+      "size": 33,
+      "top": 30,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 220,
+      "n": 8
+     }
+    ],
+    "leftBlocks": 8,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0.15,
+    "voidBox": {
+     "x": 900,
+     "y": 120,
+     "w": 540,
+     "h": 360
+    }
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 768,
+   "height": 1024,
+   "load": "load",
+   "screens": 4,
+   "filled": [
+    0.37,
+    0.73,
+    0.57,
+    0.38
+   ],
+   "motion": {
+    "elements": 2,
+    "css": 0,
+    "transitions": 2,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "page": {
+     "height": 3503,
+     "screens": 3.4,
+     "words": 156,
+     "img": 0,
+     "video": 0,
+     "canvas": 2,
+     "svg": 0,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "两个基因组之间， 究竟是哪里不一样。",
+     "words": 2,
+     "chars": 18,
+     "lines": 2,
+     "size": 43,
+     "vw": 5.6,
+     "font": "Songti SC",
+     "weight": 700,
+     "tracking": -0.012,
+     "leading": 1.18,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.94,
+     "top": 195,
+     "tag": "h2",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Synteny",
+     "words": 1,
+     "lines": 1,
+     "size": 33,
+     "font": "Songti SC"
+    },
+    "headings": [
+     {
+      "text": "Synteny",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 33,
+      "vw": 4.3,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": -0.01,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.18,
+      "top": 30,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "两个基因组之间， 究竟是哪里不一样。",
+      "words": 2,
+      "chars": 18,
+      "lines": 2,
+      "size": 43,
+      "vw": 5.6,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": -0.012,
+      "leading": 1.18,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.94,
+      "top": 195,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "点",
+      "words": 1,
+      "chars": 1,
+      "lines": 1,
+      "size": 54,
+      "vw": 7,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 0.82,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.09,
+      "top": 2453,
+      "tag": "span",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 3,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Songti SC",
+       "share": 0.59,
+       "mono": false
+      },
+      {
+       "family": "-apple-system",
+       "share": 0.33,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0.07,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      19,
+      33,
+      43,
+      54
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Songti SC",
+      "size": 15.5,
+      "leading": 1.86,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 10.7
+     },
+     "measureChars": 95,
+     "max": {
+      "size": 54,
+      "vw": 7,
+      "font": "Songti SC",
+      "text": "点"
+     },
+     "monoShare": 0.07,
+     "monoProseShare": 0.04,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [
+      "MIT · v0.1",
+      "Reference",
+      "未选择",
+      "×",
+      "Query",
+      "未选择"
+     ],
+     "microLabels": 13,
+     "microLabelShare": 0.046,
+     "microSamples": [
+      "参考",
+      "Reference",
+      "查询",
+      "Query",
+      "Reference · Mbp",
+      "检出区段"
+     ],
+     "upperShare": 0.13,
+     "centerShare": 0.06,
+     "smallText": 9
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#12100d",
+     "bodyBgHsl": {
+      "h": 36,
+      "s": 0.16,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#181510",
+       "top": 1532,
+       "hsl": {
+        "h": 38,
+        "s": 0.2,
+        "l": 0.08
+       }
+      },
+      {
+       "color": "#0d0b09",
+       "top": 1574,
+       "hsl": {
+        "h": 30,
+        "s": 0.18,
+        "l": 0.04
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#c9c2b3",
+       "share": 0.48
+      },
+      {
+       "color": "#6b6459",
+       "share": 0.28
+      },
+      {
+       "color": "#9a9285",
+       "share": 0.13
+      },
+      {
+       "color": "#ece7dc",
+       "share": 0.09
+      },
+      {
+       "color": "#e08c5a",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#c2410c",
+      "hsl": {
+       "h": 17,
+       "s": 0.88,
+       "l": 0.4
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Reference",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "拖入 FASTA（可 .gz），或点击选择",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 11.5,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "Query",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "拖入 FASTA（可 .gz），或点击选择",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 11.5,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "Reference · Mbp",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "MIT · v0.1",
+       "ratio": 3.2,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#6b6459",
+       "bg": "#12100d"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 0,
+     "radius": 2,
+     "height": 46,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 6,
+     "hairlineSamples": [
+      "div#heroMeta.lg-meta 300px",
+      "div.spec 361px",
+      "div.spec 361px",
+      "div.fig-bar 720px",
+      "div#xaxis.xaxis 720px"
+     ],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 1,
+     "roundedMedia": 1,
+     "mediaRadius": 2,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.19
+     }
+    ],
+    "nav": {
+     "links": 3,
+     "fixed": false,
+     "height": 45,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 768,
+     "h": 1024
+    },
+    "pageH": 3503,
+    "margins": {
+     "left": 22,
+     "right": 22
+    },
+    "sections": [
+     {
+      "sel": "div.mast",
+      "tag": "div",
+      "top": 0,
+      "height": 131,
+      "words": 15,
+      "media": 0,
+      "middle": 148,
+      "heading": {
+       "text": "Synteny",
+       "size": 33,
+       "tag": "h1"
+      },
+      "left": 22,
+      "right": 22,
+      "textLeft": 22,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.head",
+      "tag": "div",
+      "top": 131,
+      "height": 714,
+      "words": 29,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "两个基因组之间，",
+       "size": 43,
+       "tag": "h2"
+      },
+      "left": 22,
+      "right": 33,
+      "textLeft": 22,
+      "textRight": 33,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.specstrip",
+      "tag": "div",
+      "top": 889,
+      "height": 176,
+      "words": 12,
+      "media": 0,
+      "middle": 249,
+      "heading": null,
+      "left": 40,
+      "right": 301,
+      "textLeft": 40,
+      "textRight": 301,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tool",
+      "tag": "section",
+      "top": 1105,
+      "height": 397,
+      "words": 19,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 22,
+      "right": 151,
+      "textLeft": 41,
+      "textRight": 151,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "figure#figure",
+      "tag": "figure",
+      "top": 1532,
+      "height": 861,
+      "words": 15,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 22,
+      "right": 24,
+      "textLeft": 22,
+      "textRight": 78,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.body-grid",
+      "tag": "div",
+      "top": 2453,
+      "height": 871,
+      "words": 70,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "它不算什么",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 22,
+      "right": 22,
+      "textLeft": 22,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Synteny",
+      "size": 33,
+      "top": 30,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 22,
+      "n": 8
+     }
+    ],
+    "leftBlocks": 8,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  },
+  {
+   "width": 390,
+   "height": 844,
+   "load": "load",
+   "screens": 5,
+   "filled": [
+    0.6,
+    0.45,
+    0.64,
+    0.43,
+    0.33
+   ],
+   "motion": {
+    "elements": 2,
+    "css": 0,
+    "transitions": 2,
+    "scripted": 0,
+    "videos": 0,
+    "playingVideos": 0
+   },
+   "metrics": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "page": {
+     "height": 3936,
+     "screens": 4.7,
+     "words": 156,
+     "img": 0,
+     "video": 0,
+     "canvas": 2,
+     "svg": 0,
+     "sections": 1,
+     "horizontalOverflow": 0,
+     "overflowCulprits": [],
+     "uiFragments": 0,
+     "uiAbuse": false,
+     "realPictures": 0,
+     "videoCount": 0,
+     "uiPictures": 0,
+     "pictureSamples": [],
+     "blendText": 0,
+     "sideScrollers": 0,
+     "brokenImages": [],
+     "emoji": [],
+     "videosNoPoster": 0
+    },
+    "hero": {
+     "text": "两个基因组之间， 究竟是哪里不一样。",
+     "words": 2,
+     "chars": 18,
+     "lines": 2,
+     "size": 38,
+     "vw": 9.7,
+     "font": "Songti SC",
+     "weight": 700,
+     "tracking": -0.012,
+     "leading": 1.18,
+     "upper": false,
+     "italic": false,
+     "mono": false,
+     "align": "left",
+     "position": "center",
+     "widthRatio": 0.89,
+     "top": 260,
+     "tag": "h2",
+     "kind": "heading"
+    },
+    "h1": {
+     "text": "Synteny",
+     "words": 1,
+     "lines": 1,
+     "size": 33,
+     "font": "Songti SC"
+    },
+    "headings": [
+     {
+      "text": "Synteny",
+      "words": 1,
+      "chars": 7,
+      "lines": 1,
+      "size": 33,
+      "vw": 8.5,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": -0.01,
+      "leading": 1,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.35,
+      "top": 30,
+      "tag": "h1",
+      "kind": "heading"
+     },
+     {
+      "text": "两个基因组之间， 究竟是哪里不一样。",
+      "words": 2,
+      "chars": 18,
+      "lines": 2,
+      "size": 38,
+      "vw": 9.7,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": -0.012,
+      "leading": 1.18,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "center",
+      "widthRatio": 0.89,
+      "top": 260,
+      "tag": "h2",
+      "kind": "heading"
+     },
+     {
+      "text": "点",
+      "words": 1,
+      "chars": 1,
+      "lines": 1,
+      "size": 54,
+      "vw": 13.8,
+      "font": "Songti SC",
+      "weight": 700,
+      "tracking": 0,
+      "leading": 0.82,
+      "upper": false,
+      "italic": false,
+      "mono": false,
+      "align": "left",
+      "position": "left",
+      "widthRatio": 0.17,
+      "top": 2488,
+      "tag": "span",
+      "kind": "statement"
+     }
+    ],
+    "headingSummary": {
+     "count": 3,
+     "maxLines": 2,
+     "over2Lines": 0,
+     "statements": 1,
+     "centered": 0,
+     "medianWords": 1,
+     "mixedFontHeadings": 0
+    },
+    "type": {
+     "families": [
+      {
+       "family": "Songti SC",
+       "share": 0.59,
+       "mono": false
+      },
+      {
+       "family": "-apple-system",
+       "share": 0.33,
+       "mono": false
+      },
+      {
+       "family": "ui-monospace",
+       "share": 0.07,
+       "mono": false
+      }
+     ],
+     "familyCount": 3,
+     "sizes": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      19,
+      33,
+      38,
+      54
+     ],
+     "sizeCount": 11,
+     "notLoaded": [],
+     "body": {
+      "font": "Songti SC",
+      "size": 15.5,
+      "leading": 1.86,
+      "weight": 400,
+      "tracking": 0,
+      "contrast": 10.7
+     },
+     "measureChars": 41,
+     "max": {
+      "size": 54,
+      "vw": 13.8,
+      "font": "Songti SC",
+      "text": "点"
+     },
+     "monoShare": 0.07,
+     "monoProseShare": 0.04,
+     "monoFamilies": [
+      "ui-monospace"
+     ],
+     "monoSamples": [
+      "MIT · v0.1",
+      "Reference",
+      "未选择",
+      "×",
+      "Query",
+      "未选择"
+     ],
+     "microLabels": 13,
+     "microLabelShare": 0.046,
+     "microSamples": [
+      "参考",
+      "Reference",
+      "查询",
+      "Query",
+      "Reference · Mbp",
+      "检出区段"
+     ],
+     "upperShare": 0.13,
+     "centerShare": 0.06,
+     "smallText": 9
+    },
+    "eyebrows": [],
+    "numbered": [],
+    "color": {
+     "bodyBg": "#12100d",
+     "bodyBgHsl": {
+      "h": 36,
+      "s": 0.16,
+      "l": 0.06
+     },
+     "dark": true,
+     "sectionBgs": [
+      {
+       "color": "#181510",
+       "top": 546,
+       "hsl": {
+        "h": 38,
+        "s": 0.2,
+        "l": 0.08
+       }
+      },
+      {
+       "color": "#0d0b09",
+       "top": 1963,
+       "hsl": {
+        "h": 30,
+        "s": 0.18,
+        "l": 0.04
+       }
+      }
+     ],
+     "textColors": [
+      {
+       "color": "#c9c2b3",
+       "share": 0.48
+      },
+      {
+       "color": "#6b6459",
+       "share": 0.28
+      },
+      {
+       "color": "#9a9285",
+       "share": 0.13
+      },
+      {
+       "color": "#ece7dc",
+       "share": 0.09
+      },
+      {
+       "color": "#e08c5a",
+       "share": 0.01
+      }
+     ],
+     "button": {
+      "bg": "#c2410c",
+      "hsl": {
+       "h": 17,
+       "s": 0.88,
+       "l": 0.4
+      },
+      "fg": "#ffffff"
+     },
+     "lowContrast": [
+      {
+       "text": "Reference",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "拖入 FASTA（可 .gz），或点击选择",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 11.5,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "Query",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "拖入 FASTA（可 .gz），或点击选择",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 11.5,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "Reference · Mbp",
+       "ratio": 3.1,
+       "need": 4.5,
+       "size": 10,
+       "fg": "#6b6459",
+       "bg": "#181510"
+      },
+      {
+       "text": "MIT · v0.1",
+       "ratio": 3.2,
+       "need": 4.5,
+       "size": 11,
+       "fg": "#6b6459",
+       "bg": "#12100d"
+      }
+     ]
+    },
+    "buttons": {
+     "count": 2,
+     "inHero": 0,
+     "radius": 2,
+     "height": 46,
+     "withShadow": 0,
+     "withGradient": 0,
+     "mono": 0,
+     "upper": 0,
+     "heroLabels": []
+    },
+    "surfaces": {
+     "shadowStatic": 0,
+     "shadowOverlay": 0,
+     "shadowSamples": [],
+     "gradients": 0,
+     "scrims": 0,
+     "gradientSamples": [],
+     "gradientText": 0,
+     "hairlines": 4,
+     "hairlineSamples": [
+      "div#heroMeta.lg-meta 346px",
+      "div.fig-bar 342px",
+      "div#xaxis.xaxis 342px",
+      "footer 346px"
+     ],
+     "outlinedBoxes": 3,
+     "dashed": 0,
+     "blurred": 0,
+     "roundedBoxes": 0,
+     "boxRadius": 0,
+     "squareMedia": 1,
+     "roundedMedia": 1,
+     "mediaRadius": 2,
+     "textShadow": 0,
+     "cardRows": []
+    },
+    "heroMedia": [
+     {
+      "type": "canvas",
+      "ratio": 0.31
+     }
+    ],
+    "nav": {
+     "links": 3,
+     "fixed": false,
+     "height": 69,
+     "floatingPill": false,
+     "blur": false
+    },
+    "fontsLoaded": []
+   },
+   "layout": {
+    "viewport": {
+     "w": 390,
+     "h": 844
+    },
+    "pageH": 3936,
+    "margins": {
+     "left": 22,
+     "right": 22
+    },
+    "sections": [
+     {
+      "sel": "div.mast",
+      "tag": "div",
+      "top": 0,
+      "height": 196,
+      "words": 15,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "Synteny",
+       "size": 33,
+       "tag": "h1"
+      },
+      "left": 22,
+      "right": 28,
+      "textLeft": 22,
+      "textRight": 28,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.head",
+      "tag": "div",
+      "top": 196,
+      "height": 957,
+      "words": 29,
+      "media": 1,
+      "middle": 0,
+      "heading": {
+       "text": "两个基因组之间，",
+       "size": 38,
+       "tag": "h2"
+      },
+      "left": 22,
+      "right": 22,
+      "textLeft": 22,
+      "textRight": 25,
+      "fullBleed": false,
+      "footer": false,
+      "hero": true,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.specstrip",
+      "tag": "div",
+      "top": 1197,
+      "height": 176,
+      "words": 12,
+      "media": 0,
+      "middle": 60,
+      "heading": null,
+      "left": 40,
+      "right": 112,
+      "textLeft": 40,
+      "textRight": 112,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "section#tool",
+      "tag": "section",
+      "top": 1413,
+      "height": 479,
+      "words": 19,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 22,
+      "right": 32,
+      "textLeft": 22,
+      "textRight": 32,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "figure#figure",
+      "tag": "figure",
+      "top": 1922,
+      "height": 506,
+      "words": 15,
+      "media": 1,
+      "middle": 0,
+      "heading": null,
+      "left": 22,
+      "right": 24,
+      "textLeft": 22,
+      "textRight": 25,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "div.body-grid",
+      "tag": "div",
+      "top": 2488,
+      "height": 1207,
+      "words": 70,
+      "media": 0,
+      "middle": 0,
+      "heading": {
+       "text": "它不算什么",
+       "size": 15,
+       "tag": "h3"
+      },
+      "left": 22,
+      "right": 22,
+      "textLeft": 22,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": false,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     },
+     {
+      "sel": "footer",
+      "tag": "footer",
+      "top": 3758,
+      "height": 177,
+      "words": 13,
+      "media": 0,
+      "middle": 0,
+      "heading": null,
+      "left": 22,
+      "right": 22,
+      "textLeft": 22,
+      "textRight": 22,
+      "fullBleed": false,
+      "footer": true,
+      "hero": false,
+      "continues": false,
+      "pinned": false
+     }
+    ],
+    "gaps": [],
+    "h1s": [
+     {
+      "text": "Synteny",
+      "size": 33,
+      "top": 30,
+      "firstScreen": true
+     }
+    ],
+    "edgeText": [],
+    "edges": [
+     {
+      "x": 22,
+      "n": 8
+     }
+    ],
+    "leftBlocks": 8,
+    "bodySize": 16,
+    "stage": false,
+    "explains": true,
+    "slivers": [],
+    "voidShare": 0,
+    "voidBox": null
+   },
+   "app": null,
+   "consoleErrors": []
+  }
+ ],
+ "findings": [
+  {
+   "level": "FAIL",
+   "id": "mono",
+   "width": 1440,
+   "message": "Monospace type outside code: ui-monospace — e.g. \"MIT · v0.1\", \"Reference\", \"未选择\", \"×\"",
+   "fix": "Set it in the text face. Monospace is for literal code inside <pre>/<code> only.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "micro-label",
+   "width": 1440,
+   "message": "15 tiny uppercase letter-spaced labels (e.g. \"参考\", \"Reference\", \"查询\", \"Query\").",
+   "fix": "Use sentence-case text at a readable size, or delete the label.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "hairline",
+   "width": 1440,
+   "message": "6 thin rule(s)/divider line(s): div#heroMeta.lg-meta 300px | div.fig-bar 996px | div#ylab.ylab 26px | div.side 128px",
+   "fix": "Delete. Separate with space, a tone change, or scale. Lines are only for real tables and form fields.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "outlined-box",
+   "width": 1440,
+   "message": "3 boxes drawn with a 1px outline.",
+   "fix": "Define a surface by its fill (one tone step from the page) or leave the content unboxed.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "palette-claude",
+   "width": 1440,
+   "message": "Cream + terracotta palette (text #ece7dc, text #e08c5a).",
+   "fix": "Re-draw the palette from the library. This pairing reads as an assistant brand, not yours.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "contrast",
+   "width": 1440,
+   "message": "Low-contrast text: \"Reference\" 3.1:1 needs 4.5:1; \"拖入 FASTA（可 .gz），或点击选择\" 3.1:1 needs 4.5:1; \"Query\" 3.1:1 needs 4.5:1; \"拖入 FASTA（可 .gz），或点击选择\" 3.1:1 needs 4.5:1",
+   "fix": "Darken or lighten the text colour.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "font-count",
+   "width": 1440,
+   "message": "3 typefaces in use (Songti SC, -apple-system, ui-monospace).",
+   "fix": "Two at most.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "size-count",
+   "width": 1440,
+   "message": "11 different font sizes (10, 11, 12, 13, 14, 15, 16, 19, 33, 54, 72).",
+   "fix": "A page needs about five: display, heading, lead, body, small.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "body-size",
+   "width": 1440,
+   "message": "Body text is 15.5px.",
+   "fix": "Body copy 16–20px.",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "first-action",
+   "width": 1440,
+   "message": "No visible button in the first screen.",
+   "fix": "Give the one primary action a real button in the first screen (a filled or solid-bordered control, 44px or taller), not only a link in the navigation.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "few-pictures",
+   "width": 1440,
+   "message": "Only 0 picture(s) on the page (0 photographs, footage or raster images, 0 interface fragments). Drawings in SVG do not count.",
+   "fix": "Find real pictures of the subject's world with scripts/assets.mjs (photographs, archival images, maps, engravings, footage), download them to assets/ and give them room: a hero picture, one per section that has a subject, a full-width band. At least four, usually six to twelve."
+  },
+  {
+   "level": "WARN",
+   "id": "no-footage",
+   "width": 1440,
+   "message": "No video anywhere on the page.",
+   "fix": "Look for one honest clip with scripts/assets.mjs --video (the place, the material, the process) and use it as a muted loop with a poster frame. Defend its absence only if no clip fits the subject."
+  },
+  {
+   "level": "WARN",
+   "id": "measure",
+   "width": 1440,
+   "message": "Longest paragraph runs about 133 characters per line.",
+   "fix": "Cap paragraphs at 45–75 characters (max-width: 60ch).",
+   "alsoAt": [
+    768
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "small-text",
+   "width": 1440,
+   "message": "10 text blocks under 13px.",
+   "fix": "Nothing meant to be read goes below 13px.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "WARN",
+   "id": "dev-server",
+   "width": 1440,
+   "message": "This page is served by a development server (Vite, webpack or Next in dev mode).",
+   "fix": "Run the last gate on the production build too (vite build && vite preview, next build && next start, or the built index.html): minifiers and bundlers change the CSS a visitor receives.",
+   "alsoAt": [
+    768,
+    390
+   ]
+  },
+  {
+   "level": "FAIL",
+   "id": "still-page",
+   "width": 1440,
+   "message": "Only 2 element(s) moved while the page loaded and scrolled.",
+   "fix": "Build the motion layer (SKILL.md step 9, references/motion.md): the signature move, an entrance for the parts of every section, feedback on every control, and one moving picture. Transform and opacity only, with a reduced-motion fallback."
+  }
+ ],
+ "images": [
+  {
+   "viewport": "desktop",
+   "width": 1440,
+   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\desktop-fold.jpg",
+   "pages": [
+    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\desktop-page-01.jpg",
+    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\desktop-page-02.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "tablet",
+   "width": 768,
+   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\tablet-fold.jpg",
+   "pages": [
+    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\tablet-page-01.jpg"
+   ],
+   "film": []
+  },
+  {
+   "viewport": "mobile",
+   "width": 390,
+   "fold": "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\mobile-fold.jpg",
+   "pages": [
+    "C:\\Users\\lenovo\\AppData\\Local\\Temp\\synteny-pro\\.taste-skill\\after4\\mobile-page-01.jpg"
+   ],
+   "film": []
+  }
+ ]
+}
