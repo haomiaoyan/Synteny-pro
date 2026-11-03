@@ -68,6 +68,13 @@ try {
         不做碱基级比对，不上传任何序列。把两个 FASTA 拖进浏览器，
         它会告诉你哪几段是对齐的、哪一段整个倒了过来、哪一段搬到了别处——<b>一张图，一眼。</b>
       </p>
+      <!-- 首屏的主动作。此前首屏一个按钮都没有，访客读完标题只能往下滚，
+           而「打开示例数据」其实就在下一屏——把它提前，首屏就能直接上手。
+           点它滚到工具区并触发同一套逻辑，不重复实现。 -->
+      <div class="hero-cta">
+        <button class="btn" id="btnDemoHero" type="button" data-i18n="btn.demo">打开示例数据</button>
+        <span class="hero-cta-note" data-i18n="hero.cta.note">无需文件，本地合成一对基因组</span>
+      </div>
     </div>
 
     <!-- 首屏的活点阵：页面加载后自动跑一次真实比对，把结果画进来。

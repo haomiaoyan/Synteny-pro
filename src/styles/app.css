@@ -288,7 +288,8 @@ a { color: inherit; text-decoration: none; }
   font-size: 13px;
   line-height: 1.6;
   color: var(--faint);
-  font-family: ui-monospace, Menlo, Consolas, monospace;
+  /* 版本号不是要对齐的数据，等宽在这里只是装饰。 */
+  font-family: -apple-system, "PingFang SC", sans-serif;
   letter-spacing: .02em;
 }
 
@@ -392,6 +393,24 @@ p.standfirst {
 
 p.standfirst b { color: var(--paper); font-weight: 600; }
 
+/* 首屏主动作。
+   正文和按钮之间留 44px：比段落间距（20px）大、比区块间距（120px+）小，
+   读起来是「这一段说完了，这里是你要做的事」。 */
+.hero-cta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin: 0 0 44px;
+}
+
+.hero-cta-note {
+  font-size: 13px;
+  color: var(--faint);
+  font-family: -apple-system, "PingFang SC", sans-serif;
+  line-height: 1.5;
+}
+
 /* =========================================================================
    首屏点阵图
    页面加载后自动跑一次真实比对，把结果画进这块画布。
@@ -428,13 +447,13 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
   flex-direction: column;
   gap: 0;
   padding-top: 2px;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--paper-dim);
   letter-spacing: .01em;
 }
 
 .lg-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   color: var(--paper);
   margin-bottom: 18px;
@@ -536,7 +555,7 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
     flex-direction: row;
     flex-wrap: wrap;
     gap: 16px;
-    font-size: 12.5px;
+    font-size: 13px;
   }
   .lg-meta { margin-top: 0; width: 100%; }
 }
@@ -578,7 +597,7 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
 }
 
 .spec .v {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--paper);
   font-family: -apple-system, "PingFang SC", sans-serif;
   font-variant-numeric: tabular-nums;
@@ -632,9 +651,10 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
 .slot-body { margin-top: auto; }
 
 .slot-name {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--paper);
-  font-family: ui-monospace, Menlo, Consolas, monospace;
+  /* 文件名用正文字体：等宽是为列对齐服务的，单个文件名不需要。 */
+  font-family: -apple-system, "PingFang SC", sans-serif;
   letter-spacing: -0.01em;
   word-break: break-all;
   line-height: 1.4;
@@ -654,8 +674,8 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
   align-items: center;
   justify-content: center;
   color: var(--faint);
-  font-size: 15px;
-  font-family: ui-monospace, monospace;
+  font-size: 16px;
+  font-family: -apple-system, "PingFang SC", sans-serif;
 }
 
 /* ---------------- buttons ---------------- */
@@ -673,7 +693,7 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
   border-radius: 2px;
   background: var(--accent);
   color: #fff;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: .03em;
   font-family: -apple-system, "PingFang SC", sans-serif;
@@ -770,8 +790,10 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
 /* ---------------- figure ---------------- */
 figure { margin: 30px 0 0; }
 
+/* 图的外壳用「色阶分离」而不是描边：底色比页面深一档，边界自然读得出来。
+   原来那圈 1px 边框在图框这种大尺寸上会读成「一个空盒子」，
+   而色阶在深色主题里更安静，也让画布本身成为唯一的边界。 */
 .fig-outer {
-  border: 1px solid var(--rule2);
   background: var(--ink2);
   padding: 1px;
   position: relative;
@@ -850,7 +872,20 @@ figure { margin: 30px 0 0; }
   font-family: -apple-system, sans-serif;
 }
 
-.plotbox { position: relative; aspect-ratio: 1; background: var(--ink3); }
+/* 出结果后是正方形：点阵图两轴等长，方形画布才不浪费格子。
+   但**空态时**别撑成正方形——1000px 宽就是 1000px 高，首屏会有
+   一大块什么都没有的黑。空态压到 240px，一屏之内看得完，
+   有结果时再展开。判据用已有的 #plotEmpty.hidden，不需要 JS 加新类。 */
+.plotbox {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--ink3);
+}
+
+.plotbox:has(#plotEmpty:not(.hidden)) {
+  aspect-ratio: auto;
+  min-height: 240px;
+}
 
 canvas { display: block; width: 100%; height: 100%; }
 
@@ -868,13 +903,13 @@ canvas { display: block; width: 100%; height: 100%; }
 }
 
 .empty-t {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--mute);
   font-family: -apple-system, "PingFang SC", sans-serif;
 }
 
 .empty-s {
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--faint);
   font-family: -apple-system, "PingFang SC", sans-serif;
   max-width: 26em;
@@ -949,7 +984,7 @@ canvas { display: block; width: 100%; height: 100%; }
 
 .side .divider { height: 1px; background: var(--rule); margin: 14px 0 12px; }
 
-.side .mini { font-size: 10.5px; line-height: 1.7; color: var(--faint); }
+.side .mini { font-size: 13px; line-height: 1.7; color: var(--faint); }
 
 .xaxis {
   border-top: 1px solid var(--rule);
@@ -1023,7 +1058,7 @@ figcaption em { color: var(--paper-dim); font-style: italic; }
 
 .prose code {
   font-family: ui-monospace, Menlo, Consolas, monospace;
-  font-size: 12.5px;
+  font-size: 13px;
   color: var(--paper);
   background: rgba(236, 231, 220, .07);
   padding: 1px 5px;
@@ -1039,7 +1074,7 @@ figcaption em { color: var(--paper-dim); font-style: italic; }
 }
 
 .data .dcap {
-  font-size: 13.5px;
+  font-size: 13px;
   color: var(--faint);
   line-height: 1.7;
   margin-bottom: 14px;
@@ -1050,7 +1085,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   font-family: -apple-system, "PingFang SC", sans-serif;
-  font-size: 12.5px;
+  font-size: 13px;
 }
 
 thead th {
@@ -1113,7 +1148,7 @@ td.id { font-family: ui-monospace, Menlo, monospace; color: var(--paper); }
   border: none;
   color: var(--accent-soft);
   font-family: -apple-system, "PingFang SC", sans-serif;
-  font-size: 13.5px;
+  font-size: 13px;
   cursor: pointer;
   padding: 4px 0;
   border-bottom: 1px solid transparent;
@@ -1193,7 +1228,7 @@ td.id { font-family: ui-monospace, Menlo, monospace; color: var(--paper); }
   padding: 22px 26px;
   background: rgba(194, 65, 12, .07);
   border-left: 3px solid var(--accent);
-  font-size: 14px;
+  font-size: 13px;
   line-height: 1.82;
   color: var(--paper-dim);
 }

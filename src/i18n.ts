@@ -95,6 +95,7 @@ const DICT: Record<string, Entry> = {
     en: "drop a FASTA (.gz ok), or click to choose",
   },
   "btn.demo": { zh: "打开示例数据", en: "Load demo data" },
+  "hero.cta.note": { zh: "无需文件，本地合成一对基因组", en: "No files needed — synthesised locally" },
   "btn.run": { zh: "开始比对", en: "Compare" },
   "hint.default": {
     zh: "示例数据是两个程序合成的基因组，含倒位、易位与一段重复。",

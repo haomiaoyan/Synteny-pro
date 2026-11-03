@@ -716,6 +716,16 @@ el.btnDemo.addEventListener("click", () => {
   run();
 });
 
+/* 首屏那个「打开示例数据」与工具区那个是同一个动作，共用上面这段逻辑，
+   差别只在滚过去——首屏点完如果原地不动，结果出现在屏幕外，等于没反应。
+   滚到工具区顶部而不是结果处：让用户看见数据被填进了哪个槽。 */
+const btnDemoHero = document.getElementById("btnDemoHero") as HTMLButtonElement | null;
+btnDemoHero?.addEventListener("click", () => {
+  el.btnDemo.click();
+  const tool = document.getElementById("tool");
+  tool?.scrollIntoView({ block: "start", behavior: "smooth" });
+});
+
 el.btnRun.addEventListener("click", run);
 
 /* ---- 导出：一个按钮展开成两个 ----
