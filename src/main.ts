@@ -349,6 +349,7 @@ function paint(res: RunSuccess): void {
 
   el.btnCsv.disabled = res.segs.length === 0;
   el.btnPng.disabled = res.segs.length === 0;
+  syncExportDock();
 }
 
 /** Repaint the canvas from current state. Every visual change goes through
@@ -716,6 +717,72 @@ el.btnDemo.addEventListener("click", () => {
 });
 
 el.btnRun.addEventListener("click", run);
+
+/* ---- 导出：一个按钮展开成两个 ----
+ *
+ * 三个细节，缺一个这个控件就不好用：
+ *   1. 两个导出项都禁用时，触发器本身也禁用——否则用户点开一个空菜单。
+ *   2. Esc 关闭并把焦点还给触发器：键盘用户打开后必须能收回去，
+ *      否则焦点会留在被裁掉的菜单里（0fr 裁掉的是视觉，不是可聚焦性）。
+ *   3. 点外部关闭：这是「一次性动作」的菜单，不该常驻。
+ *
+ * 收起时把菜单的 tabindex 也拿掉（用 inert），不然 Tab 会走进看不见的按钮。
+ */
+const exportDock = document.getElementById("exportDock");
+const btnExport = document.getElementById("btnExport") as HTMLButtonElement | null;
+const exportMenu = document.getElementById("exportMenu");
+
+function syncExportDock(): void {
+  if (btnExport === null) return;
+  const anyEnabled = !el.btnPng.disabled || !el.btnCsv.disabled;
+  btnExport.disabled = !anyEnabled;
+  // 没东西可导时顺手收起来，免得留一个悬着的空菜单。
+  if (!anyEnabled) setExportOpen(false);
+}
+
+function setExportOpen(open: boolean): void {
+  if (btnExport === null || exportMenu === null) return;
+  btnExport.setAttribute("aria-expanded", open ? "true" : "false");
+  // inert 让被裁掉的那两个按钮退出 Tab 序列与无障碍树。
+  if (open) exportMenu.removeAttribute("inert");
+  else exportMenu.setAttribute("inert", "");
+}
+
+if (btnExport !== null && exportDock !== null && exportMenu !== null) {
+  setExportOpen(false);
+  // 首帧就要对：没有结果时触发器该是禁用的。只靠 paint() 里的调用不够——
+  // 打开页面到跑完第一次比对之间，这个按钮会有一段时间是「可点但没内容」。
+  syncExportDock();
+
+  btnExport.addEventListener("click", () => {
+    const open = btnExport.getAttribute("aria-expanded") !== "true";
+    setExportOpen(open);
+    if (open) {
+      // 展开后把焦点送进第一项，键盘用户不必再摸一次 Tab。
+      const first = exportMenu.querySelector<HTMLButtonElement>("button:not(:disabled)");
+      first?.focus();
+    }
+  });
+
+  exportDock.addEventListener("keydown", (ev) => {
+    if (ev.key !== "Escape") return;
+    if (btnExport.getAttribute("aria-expanded") !== "true") return;
+    ev.preventDefault();
+    setExportOpen(false);
+    btnExport.focus();
+  });
+
+  document.addEventListener("pointerdown", (ev) => {
+    if (btnExport.getAttribute("aria-expanded") !== "true") return;
+    if (ev.target instanceof Node && exportDock.contains(ev.target)) return;
+    setExportOpen(false);
+  });
+
+  // 点完任一项就收起来：导出是一次性动作，不是状态切换。
+  for (const b of [el.btnPng, el.btnCsv]) {
+    b.addEventListener("click", () => setExportOpen(false));
+  }
+}
 
 el.btnCsv.addEventListener("click", () => {
   if (S.result === null) return;

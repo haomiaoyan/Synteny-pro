@@ -228,8 +228,21 @@ try {
         </tbody>
       </table>
       <div class="data-foot">
-        <button class="link" id="btnPng" disabled data-i18n="btn.png">导出 PNG</button>
-        <button class="link" id="btnCsv" disabled data-i18n="btn.csv">导出 CSV</button>
+        <!-- 导出收成一个按钮：两个常驻的小字链接在视觉上几乎不存在，
+             而「导出」本身是一个动作，不该以两个并列链接的形式出现。
+             展开用 grid 的 0fr → 1fr（不碰 width，避免每帧重排），
+             触发方式是点击与键盘聚焦，不是 hover——hover 在触屏和键盘上都没有。 -->
+        <div class="exp" id="exportDock">
+          <button class="link exp-t" id="btnExport" type="button" aria-expanded="false" aria-controls="exportMenu">
+            <span data-i18n="btn.export">导出</span><span class="exp-c" aria-hidden="true"></span>
+          </button>
+          <div class="exp-m" id="exportMenu">
+            <div class="exp-m-in">
+              <button class="link" id="btnPng" type="button" disabled data-i18n="btn.png">PNG 图</button>
+              <button class="link" id="btnCsv" type="button" disabled data-i18n="btn.csv">CSV 表</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

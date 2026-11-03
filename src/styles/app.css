@@ -180,10 +180,25 @@ a { color: inherit; text-decoration: none; }
 
 .ctrl:hover { color: var(--accent-soft); }
 
-/* 键盘用户必须看得见焦点；鼠标用户不该看见描边。 */
+/* 键盘用户必须看得见焦点；鼠标用户不该看见描边。
+
+   为什么不能靠浏览器默认环：默认是 `outline: auto 1px rgb(255,255,255)`。
+   在浅色的 paper 主题下页面底色是 rgb(244,241,234)，白环跟它差不到 1.1:1，
+   键盘用户基本看不见自己在哪。所以这里统一用站点自己的强调色，
+   四套主题下都能看清（accent-soft 在四套里都是暖橙，跟底色对比足够）。
+
+   给所有可聚焦控件兜底，而不是逐个点名：漏掉一个就等于给键盘用户
+   挖一个坑，而这条规则对鼠标用户完全不可见（:focus-visible 只在键盘时命中）。 */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent-soft);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* 这几个原本就有的规则保留各自的偏移，只是把颜色/粗细对齐到同一套。 */
 .ctrl:focus-visible,
 .sw-b:focus-visible {
-  outline: 1px solid var(--accent-soft);
+  outline: 2px solid var(--accent-soft);
   outline-offset: 3px;
 }
 
@@ -1089,6 +1104,65 @@ td.id { font-family: ui-monospace, Menlo, monospace; color: var(--paper); }
 .link:hover:not(:disabled) { border-bottom-color: var(--accent-soft); }
 
 .link:disabled { color: var(--faint); cursor: not-allowed; }
+
+/* ---------------- 导出：一个按钮展开成两个 ----------------
+
+   为什么不给 .exp-m 直接写 width: 0 → auto：width 是布局属性，每帧都会
+   让浏览器重排整条 data-foot。这里用 grid 的 0fr → 1fr，配 min-width: 0，
+   展开过程只走合成，代价接近零。
+
+   触发是点击 + 键盘（Enter/Space 由原生 button 负责），不是 hover：
+   hover 在触屏上没有、在键盘上也没有，而这个控件是数据导出，
+   属于「操作」而不是「装饰」。 */
+.exp {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+/* 展开箭标。用 CSS 边框画的三角，不用字符也不用 SVG：
+   一个 4px 的装饰不该占一份图标资源。 */
+.exp-c {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 6px;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid currentColor;
+  transform-origin: 50% 40%;
+  transition: transform .2s ease;
+  vertical-align: 1px;
+}
+
+.exp-t[aria-expanded="true"] .exp-c { transform: rotate(180deg); }
+
+/* 收起态：0fr 让这一列宽度归零，内容被裁掉；opacity 让边缘不突然消失。 */
+.exp-m {
+  display: grid;
+  grid-template-columns: 0fr;
+  opacity: 0;
+  transition: grid-template-columns .22s ease, opacity .18s ease;
+}
+
+.exp-m-in {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  white-space: nowrap;
+}
+
+.exp-t[aria-expanded="true"] + .exp-m {
+  grid-template-columns: 1fr;
+  opacity: 1;
+}
+
+/* 全部导出项都不可用时，触发器本身也该是禁用的样子——
+   否则用户点开一个空菜单。 */
+.exp-t:disabled { color: var(--faint); cursor: not-allowed; }
 
 .note {
   grid-column: 1 / -1;

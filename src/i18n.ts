@@ -132,8 +132,11 @@ const DICT: Record<string, Entry> = {
   "table.th.qry": { zh: "查询", en: "Query" },
   "table.th.len": { zh: "长度", en: "Length" },
   "table.th.ident": { zh: "一致", en: "Ident" },
-  "btn.png": { zh: "导出 PNG", en: "Export PNG" },
-  "btn.csv": { zh: "导出 CSV", en: "Export CSV" },
+  "btn.export": { zh: "导出", en: "Export" },
+  /* 展开后的两项不再重复「导出」二字——触发器已经说过了，
+     连着读成「导出 导出 PNG 导出 CSV」是明显的语病。 */
+  "btn.png": { zh: "PNG 图", en: "PNG" },
+  "btn.csv": { zh: "CSV 表", en: "CSV" },
   "png.footer": { zh: "Synteny · 浏览器内的共线性点阵图", en: "Synteny · genome dot plots in the browser" },
   "sig.col": { zh: "共线", en: "collinear" },
   "sig.inv": { zh: "倒位", en: "inverted" },
