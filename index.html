@@ -76,10 +76,13 @@ try {
       <canvas id="heroPlot" class="hero-plot" aria-label="示例基因组的点阵图" data-i18n-aria="hero.plot.aria"></canvas>
       <div class="hero-legend">
         <div class="lg-title" data-i18n="hero.legend.title">这张图怎么读</div>
+        <!-- 图例是按钮，不是文字：点一下锁定这一层，图上其余层淡化；键盘 Tab 到、
+             回车/空格锁定，Esc 解除。aria-pressed 只反映「锁定」，不反映悬停。
+             data-tier 必须与 palette 的 tier 编号一致（0 共线 / 1 倒位 / 2 易位）。 -->
         <div class="lg-list">
-          <span class="lg-item"><i class="lg-dot lg-col"></i><span data-i18n="legend.col">共线</span><em>顺序与方向一致</em></span>
-          <span class="lg-item"><i class="lg-dot lg-inv"></i><span data-i18n="legend.inv">倒位</span><em>同一段反了过来</em></span>
-          <span class="lg-item"><i class="lg-dot lg-trn"></i><span data-i18n="legend.trn">易位</span><em>一段搬到了别处</em></span>
+          <button type="button" class="lg-item" data-tier="0" aria-pressed="false"><i class="lg-dot lg-col"></i><span data-i18n="legend.col">共线</span><em>顺序与方向一致</em></button>
+          <button type="button" class="lg-item" data-tier="1" aria-pressed="false"><i class="lg-dot lg-inv"></i><span data-i18n="legend.inv">倒位</span><em>同一段反了过来</em></button>
+          <button type="button" class="lg-item" data-tier="2" aria-pressed="false"><i class="lg-dot lg-trn"></i><span data-i18n="legend.trn">易位</span><em>一段搬到了别处</em></button>
         </div>
         <div class="lg-meta" id="heroMeta">—</div>
         <p class="lg-note" data-i18n="hero.legend.note">

@@ -65,6 +65,21 @@ export interface PlotInput {
   view?: View;
   /** Segment to outline, in the same coordinates as the data. */
   highlight?: Segment | null;
+  /**
+   * Emphasise one structural tier and fade the others.
+   *
+   * `null`/omitted leaves every tier exactly as it was, so callers that never
+   * touch a legend pay nothing. Tier 3 (noise) is never faded: see the rule in
+   * drawPoints.
+   */
+  tierFocus?: 0 | 1 | 2 | null;
+  /**
+   * Hand back the per-cell tier map, for reverse hit-testing on the hero plot.
+   *
+   * Opt-in because the map costs one byte per cell — about 2.1 MB at 1448².
+   * Only the hero figure asks for it; the tool plot never does.
+   */
+  collectTiers?: boolean;
 }
 
 export interface PlotState {
@@ -75,6 +90,14 @@ export interface PlotState {
   width: number;
   /** The window actually drawn, so pointer->genome mapping cannot drift. */
   view: View;
+  /**
+   * Per-cell tier, `cells * cells` entries, 0xff meaning "no seed here".
+   *
+   * Present only when the caller passed `collectTiers`. The buffer is square,
+   * so `cells = sqrt(tiers.length)`; that is the only way to recover the cell
+   * grid for hit-testing without widening this interface.
+   */
+  tiers?: Uint8Array;
 }
 
 /** The full extent of both genomes, i.e. the un-zoomed view. */
@@ -160,13 +183,15 @@ export function drawPlot(
   g.fillStyle = P.bg;
   g.fillRect(0, 0, w, h);
 
-  drawPoints(g, input, view, pad, inner, dpr);
+  const tiersOut = drawPoints(g, input, view, pad, inner, dpr);
   drawGrid(g, pad, inner);
   drawFrame(g, view, pad, inner, input);
   drawHighlight(g, input.highlight ?? null, view, pad, inner);
   drawTicks(g, view, pad, inner);
 
-  return { pad, inner, width: w, view };
+  const state: PlotState = { pad, inner, width: w, view };
+  if (tiersOut !== null) state.tiers = tiersOut;
+  return state;
 }
 
 function drawPoints(
@@ -176,16 +201,25 @@ function drawPoints(
   pad: number,
   inner: number,
   dpr: number,
-): void {
+): Uint8Array | null {
   const { pts } = input;
   const count = pts.r.length;
-  if (count === 0) return;
+  if (count === 0) return null;
 
   // Work in device pixels: one seed per cell at native resolution is what
   // keeps a dense diagonal one pixel wide instead of a blurry band.
   const cells = Math.max(2, Math.round(inner * dpr));
   const buf = ensureBuffer(cells);
-  if (buf === null || bufCtx === null) return;
+  if (buf === null || bufCtx === null) return null;
+
+  // Per-cell tier export. 0xff keeps the internal convention "no seed here",
+  // so a hit-test can tell an empty cell from a real tier-0 claim — zero would
+  // mean collinear, which is a claim, not an absence.
+  //
+  // Only the hero figure asks for this (about 2.1 MB at 1448²). The tool plot
+  // never does, so hovering the tool figure cannot silently allocate it.
+  const outTiers: Uint8Array | null =
+    input.collectTiers === true ? new Uint8Array(cells * cells).fill(0xff) : null;
 
   const spanR = Math.max(1, view.r1 - view.r0);
   const spanQ = Math.max(1, view.q1 - view.q0);
@@ -213,7 +247,7 @@ function drawPoints(
     if (tiers[k] === 0xff || t < tiers[k]) tiers[k] = t;
   }
 
-  if (occupied.length === 0) return;
+  if (occupied.length === 0) return outTiers;
 
   const img = bufCtx.createImageData(cells, cells);
   const px = img.data;
@@ -228,8 +262,18 @@ function drawPoints(
     const tier = t < 4 ? t : 3;
     const [r, gg, b] = readPalette().tierRgb[tier];
     const sat = 1 - Math.exp(-counts[k] / TAU);
+    // Dimming rule (SDS §4.4). Noise is exempt: its peak is already 0.55
+    // (palette.ts:39), and 0.55 * 0.18 = 0.099 falls below the weight of a
+    // grid line — the plot would stop showing that the dots are measurements
+    // rather than a fitted line, which is the one thing this figure is for.
+    // Explicit null checks because a 0 focus must still dim the other tiers.
+    const dim =
+      input.tierFocus !== null &&
+      input.tierFocus !== undefined &&
+      tier !== 3 &&
+      tier !== input.tierFocus;
     const a = TIER_PEAK[tier] * sat;
-    const core = Math.round(a * 255);
+    const core = Math.round((dim ? a * 0.18 : a) * 255);
 
     const cx = k % cells;
     const cy = (k - cx) / cells;
@@ -255,6 +299,12 @@ function drawPoints(
       }
     }
 
+    // Copy the tier out **before** the reset just below. Reversing these two
+    // lines is silent and fatal: every cell would be recorded as 0xff, the
+    // hero plot's reverse highlight would never find a tier, and nothing
+    // would throw.
+    if (outTiers !== null) outTiers[k] = tiers[k];
+
     // Reset for the next draw; the buffer is reused, not reallocated.
     counts[k] = 0;
     tiers[k] = 0xff;
@@ -269,6 +319,8 @@ function drawPoints(
   const padD = Math.round(pad * dpr);
   g.drawImage(buf, 0, 0, cells, cells, padD, padD, cells, cells);
   g.restore();
+
+  return outTiers;
 }
 
 function drawGrid(g: CanvasRenderingContext2D, pad: number, inner: number): void {

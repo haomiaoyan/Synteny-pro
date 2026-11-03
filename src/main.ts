@@ -808,6 +808,16 @@ ro.observe(el.plot);
 // reader reaches for after poking at the figure.
 window.addEventListener("keydown", (ev) => {
   if (ev.key !== "Escape") return;
+  // 图例上的锁定是最近一次「戳图」的结果，也是唯一能用键盘撤销的那个状态，
+  // 所以 Esc 先撤它。hover 一并清掉：点击会让按钮同时获得焦点（焦点本身也
+  // 触发高亮），只清 latched 的话，鼠标还停在图例上时画面毫无变化，Esc 看着
+  // 就像没生效。
+  if (latchedTier !== null) {
+    latchedTier = null;
+    hoverTier = null;
+    syncTier();
+    return;
+  }
   if (S.selected !== null) {
     select(null);
     return;
@@ -910,6 +920,42 @@ interface HeroState {
 let heroState: HeroState | null = null;
 
 /**
+ * 图例高亮的两个状态（SDS §4.6）。
+ *
+ * `hoverTier` 来自 mouseenter / focus，指针或焦点一离开就没了；`latchedTier`
+ * 来自 click，只有再点一次或按 Esc 才清。生效值取 `hoverTier ?? latchedTier`
+ * ——悬停优先，所以「锁定了倒位、再临时看一眼共线」是看得到共线的，松手又回到
+ * 锁定那一层。
+ *
+ * 分开而不是合一个「currentTier」，是因为 `aria-pressed` 只反映**锁定**：
+ * 它是「这个筛选器按下了没有」，而悬停没有按下这回事。混在一起的话，读屏
+ * 软件会在每次划过图例时播报一遍按键状态。
+ */
+let hoverTier: 0 | 1 | 2 | null = null;
+let latchedTier: 0 | 1 | 2 | null = null;
+
+/** 上一次真正画进首屏图的 tier，用来跳过没有变化的重绘。 */
+let paintedTier: 0 | 1 | 2 | null = null;
+
+/** 首屏图最近一次的几何与每格 tier；反向命中只认这一份，不再回读像素。 */
+let heroGeom: PlotState | null = null;
+
+/** 当前该强调哪一层；`hoverTier ?? latchedTier` 是全部规则的唯一出处。 */
+function effectiveTier(): 0 | 1 | 2 | null {
+  return hoverTier ?? latchedTier;
+}
+
+/**
+ * 首屏图这一帧的输入：叠上当前生效的 tier，并顺手要回每格 tier。
+ *
+ * 只有首屏这张图请求 `collectTiers`（约 2.1 MB）；工具区那张图不请求，
+ * 所以那边的内存与绘制开销和以前完全一样。
+ */
+function heroInput(state: HeroState): PlotInput {
+  return { ...state.input, tierFocus: effectiveTier(), collectTiers: true };
+}
+
+/**
  * 首屏图欠下的那次重画。
  *
  * 为什么需要它：滚动缩放给 `.hero-fig` 挂了 transform，而 drawPlot 是拿
@@ -990,7 +1036,7 @@ function paintHeroByLayout(): void {
   const w = canvas.offsetWidth;
   const h = canvas.offsetHeight;
   if (w < 10 || h < 10) return; // 被折叠或还没排版，这一轮没得画
-  drawPlot(canvas, heroState.input, {
+  heroGeom = drawPlot(canvas, heroInput(heroState), {
     w,
     h,
     dpr: Math.min(window.devicePixelRatio || 1, 2),
@@ -1013,7 +1059,7 @@ function repaintHero(): void {
     scheduleHeroFallback();
     return;
   }
-  drawPlot(heroState.canvas, heroState.input);
+  heroGeom = drawPlot(heroState.canvas, heroInput(heroState));
   // 已经画过了，排队中的兜底就成了多余的一次。
   cancelHeroFallback();
   heroDirty = false;
@@ -1144,6 +1190,162 @@ if (heroCanvas !== null) {
     if (heroState !== null) repaintHero();
   });
   heroRo.observe(heroCanvas);
+}
+
+/* --------------------------------------------- 图例 ↔ 首屏图双向高亮 */
+
+/**
+ * 图例按钮。批次五把 `.lg-item` 从 <span> 换成了 <button>，选择器仍按类名取
+ * ——批次四的入场层与 still-page 计数都挂在 `.lg-item` 这个类上，改成标签
+ * 选择器会把它们一起弄丢。
+ */
+const lgButtons = Array.from(document.querySelectorAll<HTMLButtonElement>(".lg-item"));
+
+/** 从 data-tier 取 tier；写错的按钮直接忽略，而不是当成 0。 */
+function tierOf(btn: HTMLButtonElement): 0 | 1 | 2 | null {
+  const n = Number(btn.dataset.tier);
+  return n === 0 || n === 1 || n === 2 ? n : null;
+}
+
+/**
+ * 把两个状态刷到 DOM 上。
+ *
+ * `aria-pressed` 只看 latched，不掺 hover（SDS §4.6 真值表）；`.hot` 表示这
+ * 一层此刻在图上被强调着，来源可能是图例悬停、键盘焦点，也可能是鼠标在图上
+ * 扫过——反向高亮要的正是这个类。
+ */
+function paintLegend(): void {
+  const active = effectiveTier();
+  for (const btn of lgButtons) {
+    const tier = tierOf(btn);
+    btn.setAttribute("aria-pressed", tier !== null && tier === latchedTier ? "true" : "false");
+    btn.classList.toggle("hot", tier !== null && tier === active);
+  }
+}
+
+/**
+ * 状态变化的唯一出口：先刷图例，再决定要不要重画。
+ *
+ * 重画有门槛，因为 pointermove 一秒能来几十次，而每次重画都要顺带生成一张
+ * 2.1 MB 的 tier 图。高亮没变就什么都不做——这既省掉重绘，也避免在密集的
+ * 指针事件里制造垃圾。
+ */
+function syncTier(): void {
+  paintLegend();
+  const next = effectiveTier();
+  if (next === paintedTier) return;
+  paintedTier = next;
+  repaintHero();
+}
+
+for (const btn of lgButtons) {
+  const tier = tierOf(btn);
+  if (tier === null) continue;
+
+  // 指针进入就临时强调，离开还回去（锁过的话自然回到锁定的那一层）。
+  btn.addEventListener("mouseenter", () => {
+    hoverTier = tier;
+    syncTier();
+  });
+  btn.addEventListener("mouseleave", () => {
+    // 焦点还在这颗按钮上就先别撤：键盘 Tab 过来、再用鼠标划过别处，
+    // 高亮不该消失。收尾交给 blur。
+    if (document.activeElement === btn) return;
+    hoverTier = null;
+    syncTier();
+  });
+
+  // 键盘可达：Tab 到按钮即高亮。Enter / Space 由 <button> 原生成 click，
+  // 所以不另写 keydown——写了会和浏览器的合成 click 各触发一次，变成开关两下。
+  btn.addEventListener("focus", () => {
+    hoverTier = tier;
+    syncTier();
+  });
+  btn.addEventListener("blur", () => {
+    hoverTier = null;
+    syncTier();
+  });
+
+  // 再点一次解锁：aria-pressed 是开关语义，按下去还得弹得回来。
+  btn.addEventListener("click", () => {
+    latchedTier = latchedTier === tier ? null : tier;
+    syncTier();
+  });
+}
+
+paintLegend();
+
+/**
+ * 首屏图的 tier 命中测试。
+ *
+ * 为什么不能回读像素：绘制是 3×3 splat + max 混合，再叠上 0.18 的淡化，
+ * 读回来的颜色既不是某一层的纯色，也分不清「这层被淡化了」和「这层本来
+ * 就这么淡」。所以画的时候顺手把每格 tier 存下来（plot.ts 的 collectTiers），
+ * 这里只做坐标换算。
+ *
+ * 命中用小邻域而不是单格：splat 把一颗种子摊成 3×3，而 tier 只记在中心格；
+ * 只认单格的话，指着看得见的颗粒边缘反而命中不到任何一层。
+ */
+function heroTierAt(ev: PointerEvent): 0 | 1 | 2 | null {
+  const geom = heroGeom;
+  const canvas = heroState?.canvas;
+  if (geom === null || canvas === undefined || geom.tiers === undefined) return null;
+
+  // 缓冲是方的，格子数只能从长度反推——PlotState 有意不为命中测试再宽一格。
+  const cells = Math.round(Math.sqrt(geom.tiers.length));
+  if (cells < 2) return null;
+
+  const rect = canvas.getBoundingClientRect();
+  const layoutW = canvas.offsetWidth;
+  if (rect.width <= 0 || layoutW <= 0) return null;
+
+  // 滚动缩放给 .hero-fig 挂了 scale 变换，getBoundingClientRect 返回的正是
+  // **变换后**的盒子；除以缩放比换回布局坐标，才和 geom 里的 pad/inner 同套。
+  const scale = rect.width / layoutW;
+  const px = (ev.clientX - rect.left) / scale;
+  const py = (ev.clientY - rect.top) / scale;
+
+  const fx = (px - geom.pad) / geom.inner;
+  const fy = (py - geom.pad) / geom.inner;
+  if (fx < 0 || fx > 1 || fy < 0 || fy > 1) return null;
+
+  const cx = Math.min(cells - 1, Math.floor(fx * cells));
+  const cy = Math.min(cells - 1, Math.floor(fy * cells));
+
+  let bestTier: 0 | 1 | 2 | null = null;
+  let bestDist = Infinity;
+  for (let dy = -2; dy <= 2; dy++) {
+    const y = cy + dy;
+    if (y < 0 || y >= cells) continue;
+    for (let dx = -2; dx <= 2; dx++) {
+      const x = cx + dx;
+      if (x < 0 || x >= cells) continue;
+      const t = geom.tiers[y * cells + x];
+      // 0xff = 空格子；3 = 噪声，图例里没有它，所以不算命中。
+      if (t > 2) continue;
+      const dist = dx * dx + dy * dy;
+      if (dist < bestDist || (dist === bestDist && (bestTier === null || t < bestTier))) {
+        bestDist = dist;
+        bestTier = t as 0 | 1 | 2;
+      }
+    }
+  }
+  return bestTier;
+}
+
+if (heroCanvas !== null) {
+  // 指针在图上移动即反查对应层；离开清掉。命中值没变就直接返回，不重绘。
+  heroCanvas.addEventListener("pointermove", (ev) => {
+    const tier = heroTierAt(ev);
+    if (tier === hoverTier) return;
+    hoverTier = tier;
+    syncTier();
+  });
+  heroCanvas.addEventListener("pointerleave", () => {
+    if (hoverTier === null) return;
+    hoverTier = null;
+    syncTier();
+  });
 }
 
 // 首屏点阵图：加载后自动跑一次小样本比对，让访客立刻看到产出。

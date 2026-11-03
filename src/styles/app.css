@@ -376,12 +376,61 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
   margin-bottom: 24px;
 }
 
+/* 图例是按钮（批次五）。这个文件里没有全局 button reset（只有 line 96 的
+   `* { box-sizing }`），裸 <button> 会自带 2px outset 边框、buttonface 底色、
+   居中文字和系统字体——那会同时加重 outlined-box 与 font-count 两项缺陷，
+   所以这里逐条清掉，只留下「可以按」这一个语义。 */
 .lg-item {
   display: grid;
   grid-template-columns: 8px 3.2em 1fr;
   align-items: center;
   gap: 10px;
   line-height: 1.45;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: start;
+  width: 100%;
+  cursor: pointer;
+  /* 只为 hover / 锁定反馈，不是入场动效；入场过渡在 motion.css 里，
+     且被收在 `.reveal:not(.done)` 内，`.done` 之后这里才生效。 */
+  transition: color .16s ease;
+}
+
+/* 悬停或键盘聚焦：颜色提亮，和图上高亮同时发生。
+   :focus-visible 保留浏览器默认焦点环——那是键盘用户唯一的位置提示，
+   不在这里清掉。 */
+.lg-item:hover,
+.lg-item:focus-visible {
+  color: var(--paper);
+}
+
+.lg-item:hover em,
+.lg-item:focus-visible em {
+  color: var(--paper-dim);
+}
+
+.lg-item .lg-dot {
+  transition: transform .16s ease;
+}
+
+/* 反向高亮：鼠标在图上扫到某一层时，对应图例亮起来（由 main.ts 加 .hot）。 */
+.lg-item.hot,
+.lg-item[aria-pressed="true"] {
+  color: var(--paper);
+}
+
+.lg-item.hot em,
+.lg-item[aria-pressed="true"] em {
+  color: var(--paper-dim);
+}
+
+.lg-item.hot .lg-dot,
+.lg-item[aria-pressed="true"] .lg-dot {
+  transform: scale(1.3);
 }
 
 .lg-item em {
