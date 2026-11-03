@@ -187,19 +187,35 @@ a { color: inherit; text-decoration: none; }
   outline-offset: 3px;
 }
 
-.sw { display: flex; gap: 7px; }
+.sw { display: flex; gap: 0; }
 
 /* 每个色块是它那套主题的两色对角切分：左上为页面底色，右下为正文色。
-   一眼能看出是深是浅，又不用把整页染成那个颜色去预览。 */
+   一眼能看出是深是浅，又不用把整页染成那个颜色去预览。
+
+   点击区 24px、圆本身 12px：原来是 11px 直接当按钮，低于 WCAG 2.2 的
+   24×24 最小目标尺寸，触屏上基本点不准。圆画在伪元素上，点击区因此
+   可以比视觉尺寸大，两者互不牵制。 */
 .sw-b {
-  width: 11px;
-  height: 11px;
+  width: 24px;
+  height: 24px;
   padding: 0;
-  border: 1px solid var(--rule2);
+  border: 0;
+  background: none;
   border-radius: 50%;
   cursor: pointer;
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.sw-b::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--rule2);
   background: linear-gradient(135deg, var(--sw-ink) 0 50%, var(--sw-paper) 50% 100%);
-  transition: box-shadow .15s;
+  transition: box-shadow .15s, opacity .15s, transform .15s;
 }
 
 .sw-b[data-sw="ink"]    { --sw-ink: #12100d; --sw-paper: #ece7dc; }
@@ -207,9 +223,31 @@ a { color: inherit; text-decoration: none; }
 .sw-b[data-sw="indigo"] { --sw-ink: #0e1420; --sw-paper: #e8e6df; }
 .sw-b[data-sw="moss"]   { --sw-ink: #101410; --sw-paper: #e6e6d8; }
 
-.sw-b[aria-pressed="true"] {
+.sw-b[aria-pressed="true"]::before {
   border-color: var(--accent-soft);
   box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* 联动退让：一个色块被指到或聚焦时，其余三个退到半透明并略缩。
+   四个小圆点挨在一起时，「指针到底落在哪个上」其实很难判断；
+   退让把这件事变成一眼可见，也顺带让选中的那一个跳出来。
+
+   用 :has() 而不是给每个色块挂 JS 监听：这是纯呈现的联动，
+   没有需要记住的状态，不该为此多四个事件处理器。
+   focus-visible 走同一条规则——键盘用户必须看到同样的提示。
+
+   当前选中项不参与退让：它那圈橙色描边是「现在用的是哪套」的唯一提示，
+   跟着一起淡掉就等于把状态弄丢了。这条 :not 必须排在前面那条之后。 */
+.sw:has(.sw-b:hover) .sw-b:not(:hover)::before,
+.sw:has(.sw-b:focus-visible) .sw-b:not(:focus-visible)::before {
+  opacity: .42;
+  transform: scale(.84);
+}
+
+.sw:has(.sw-b:hover) .sw-b[aria-pressed="true"]::before,
+.sw:has(.sw-b:focus-visible) .sw-b[aria-pressed="true"]::before {
+  opacity: 1;
+  transform: none;
 }
 
 .mast-top h1 {
