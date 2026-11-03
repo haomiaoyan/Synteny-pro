@@ -1,4 +1,9 @@
 import "./styles/app.css";
+// 入场动效层单独成文件，但仍走 main.ts 的 import，不另开 <link>：
+// 构建器会把它编进同一个 CSS 产物，顺序天然确定（app.css 在前）。
+// 顺序在这里是有意义的——motion.css 里有一条 .slot.reveal 要把
+// app.css 的 .slot 过渡合并回来，它必须排在后面才能生效。
+import "./styles/motion.css";
 import { parseFasta, autoParams } from "./core/fasta.js";
 import { makeDemo, demoCaption, type Demo } from "./core/demo.js";
 import type { Sequence, Segment } from "./core/types.js";
@@ -9,6 +14,7 @@ import { initTheme } from "./ui/theme.js";
 import { t, lang, initLang, onLangChange } from "./i18n.js";
 import { downloadPng } from "./ui/export.js";
 import { initScrollZoom, isScrollZoomActive, onScrollZoomReset } from "./ui/scroll-zoom.js";
+import { initReveal } from "./ui/reveal.js";
 import { repaintParticlesOnce, startParticles } from "./ui/particles.js";
 
 /**
@@ -92,6 +98,23 @@ const el = {
   inK: $<HTMLInputElement>("inK"),
   inW: $<HTMLInputElement>("inW"),
 };
+
+/* ---------------------------------------------------------- 入场动效层 */
+
+// 尽早挂上，位置要紧。
+//
+// 这一层是「先藏后显」：`.reveal` 一加，元素就跳到 opacity:0 等入场。
+// 所以它必须赶在首次内容绘制之前完成，否则首屏会先以最终状态画出来、
+// 再被按回隐藏态重浮一遍——访客看到的是一次闪烁。
+//
+// 顶部这段（模块求值 + 这里的同步调用）跑在首帧之前；实测 FCP 在 380ms，
+// 而 `.reveal` 在 246ms 就已就位。但这条边距只有一次布局那么厚，
+// 别在它上面再插入重活（大循环、同步 fetch、等 worker）。
+// 真需要异步准备的东西，放到下面去。
+//
+// 不接返回值：这一层与页面同寿，没有卸载时机。保留 teardown 是为了
+// 将来真有「关掉入场」的开关时一处就能拆干净。
+void initReveal();
 
 /* --------------------------------------------------------------- helpers */
 

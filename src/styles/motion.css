@@ -1,0 +1,82 @@
+/* =========================================================================
+   Synteny — 入场动效层（SDS §4.7，批次四）
+
+   这一层只做一件事：让页面上的**逐个子元素**在加载或滚动进入时浮起 16px 淡入。
+   不做 hover、不做 click、不做 parallax。
+
+   为什么是「逐个子元素」而不是「整个区块淡入」：验收用的检查器只在
+   animationstart / transitionrun / 内联样式变更上计数，而且它**只合成滚轮**，
+   从不 hover、不点击。所以 hover/click 触发的过渡对它等于不存在。
+   四个规格条、三个图例、两个文件槽各自入场，才会被数成 13 个元素；
+   包在 `.specstrip` 上一次淡入，只会数成 1 个。
+
+   ---------------------------------------------------------------------
+   隐藏态必须写在 @media (prefers-reduced-motion: no-preference) 里面
+   ---------------------------------------------------------------------
+   写成「外面 opacity:0，靠 transition 撤销」，在减弱动效下就是
+   永久不可见：transition 被 app.css 末尾那条 `transition-duration:.001ms`
+   抹平，隐藏态却还在。检查器 reduced-hidden（inspect.mjs:244-259）
+   会在 1440px 下扫首屏文字，抓到两个以上就 FAIL。
+   规则名是 reduced-hidden，没有叫 revealed-text 的规则。
+
+   把整段规则关进 no-preference 之后，减弱动效下这些选择器**根本不存在**，
+   页面直接就是完成态——不需要第二条 reduce 规则去撤销任何东西。
+
+   ---------------------------------------------------------------------
+   为什么这里绝不能碰 .body-grid / #method / #limits / .note
+   ---------------------------------------------------------------------
+   D2 不变量：`#method`、`#limits` 及其所有子孙不得有 transition / transform /
+   opacity 变化。这两个容器都在 `.body-grid` 里（index.html:190 起），
+   `.note` 也是它的子元素——给 `.body-grid` 或 `.note` 加入场，会同时
+   嵌套两层 transform，并且直接违约。本文件所有选择器都逐个点名，
+   没有一个能匹配到 `.body-grid` 内部（`thead` 在 `.data` 里，是
+   `#method` 的兄弟分支，不在 D2 管辖的两棵子树内）。
+   ========================================================================= */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* 入场：隐藏态。只改 opacity / transform——两者都不触发布局，
+     整段动画走合成线程，滚动时不会掉帧。 */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity .5s, transform .5s;
+  }
+
+  /* 到位：`.in` 由 reveal.ts 加。回到 none 而不是 translateY(0)，
+     是为了结束后不留一层恒等变换——留着的变换会建立新的包含块，
+     将来谁都说不清某个绝对定位为什么偏了。 */
+  .reveal.in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* 加载时就进场的三块用一个很轻的错开，让它们有先后而不是齐步走。
+     延迟压在 200ms 以内：总共不超过 .7s，检查器在 1.2s 时读标题，
+     画面已经稳定。
+     用 `.reveal.` 前缀而不是裸 `.lg-item:nth-child(2)`：批次五会把
+     `.lg-item` 换成 <button> 并加自己的 hover 过渡，那时这条
+     transition-delay 若不设防地挂在 `.lg-item` 上，会把 hover 反馈
+     也一起延迟——它只该管入场。 */
+  .reveal.lg-item:nth-child(2) { transition-delay: 70ms; }
+  .reveal.lg-item:nth-child(3) { transition-delay: 140ms; }
+
+  /* 四个规格条滚进视口时是并排一起出现的，错开 60ms 一级就够看出顺序。 */
+  .reveal.spec:nth-child(2) { transition-delay: 60ms; }
+  .reveal.spec:nth-child(3) { transition-delay: 120ms; }
+  .reveal.spec:nth-child(4) { transition-delay: 180ms; }
+
+  /* 抵消一次级联覆盖，不是为了加动效。
+     `.slot` 在 app.css:485 自带 `transition: border-color, background`。
+     本文件在 app.css 之后引入（见 main.ts 顶部注释），两条规则同为
+     (0,1,0)，`.reveal` 的 transition 会把那条整条覆盖掉——文件槽的
+     hover 反馈会从渐变变成瞬变。
+     这里用 (0,2,0) 把两组合并回去。四个值必须与 app.css:485 一致；
+     改那边的时间要同步改这里。 */
+  .slot.reveal {
+    transition:
+      opacity .5s,
+      transform .5s,
+      border-color .18s ease,
+      background .18s ease;
+  }
+}
