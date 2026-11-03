@@ -57,6 +57,29 @@ const DICT: Record<string, Entry> = {
     zh: "不做碱基级比对，不上传任何序列。把两个 FASTA 拖进浏览器，它会告诉你哪几段是对齐的、哪一段整个倒了过来、哪一段搬到了别处——<b>一张图，一眼。</b>",
     en: "No base-level alignment, no uploads. Drop two FASTA files into the browser and it shows you which stretches line up, which one got flipped end to end, and which one moved somewhere else — <b>one figure, one glance.</b>",
   },
+  "hero.plot.aria": {
+    zh: "示例基因组的点阵图",
+    en: "dot plot of the example genomes",
+  },
+  "hero.meta": {
+    zh: "{col} 共线 · {inv} 倒位 · {trn} 易位 · {t} s",
+    en: "{col} collinear · {inv} inverted · {trn} translocated · {t} s",
+  },
+  "plot.aria": {
+    zh: "比对结果的点阵图",
+    en: "dot plot of the comparison",
+  },
+  // 下面两条标记里一直在用，词表却漏了：切到英文时页面上会直接显示出
+  // key 本身（i18n.ts 的 pick() 找不到词条就返回 key）。补齐它们不属于
+  // 本批次的设计改动，只是把既有的漏项补上。
+  "hero.legend.title": {
+    zh: "这张图怎么读",
+    en: "how to read this figure",
+  },
+  "hero.legend.note": {
+    zh: "上面这张图是页面加载时现场算出来的，不是你上传的数据。",
+    en: "The figure above was computed on load, not from anything you uploaded.",
+  },
   "spec.method.k": { zh: "方法", en: "Method" },
   "spec.method.v": { zh: "minimiser + 链化", en: "minimiser + chaining" },
   "spec.scope.k": { zh: "适用范围", en: "Up to" },

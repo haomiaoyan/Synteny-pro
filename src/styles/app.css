@@ -263,18 +263,6 @@ a { color: inherit; text-decoration: none; }
   display: block;
 }
 
-.glyph {
-  flex: 0 0 auto;
-  width: 120px;
-  height: 120px;
-  margin-bottom: 30px;
-  /* 画布本身透明，点阵直接落在页面上，没有黑色方块 */
-  opacity: 0;
-  animation: glyph-in .001ms linear .55s forwards;
-}
-
-@keyframes glyph-in { to { opacity: 1; } }
-
 h2.title {
   font-size: clamp(38px, 5.6vw, 72px);
   line-height: 1.18;
@@ -1007,7 +995,6 @@ footer a:hover { color: var(--accent-soft); }
   .spec:nth-child(1), .spec:nth-child(2) { border-bottom: 1px solid var(--rule); }
   .fig-grid { grid-template-columns: 1fr; }
   .ylab, .side { display: none; }
-  .glyph { display: none; }
   .mast-top { flex-wrap: wrap; }
   .mast-top .issue { text-align: left; }
   .io { grid-template-columns: 1fr; gap: 10px; }

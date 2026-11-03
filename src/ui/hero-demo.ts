@@ -12,21 +12,13 @@
  *
  * 与 core/demo.ts 的区别：那个是给「打开示例数据」按钮用的完整演示（2 Mbp），
  * 这个是首屏专用的小样本，追求 100ms 内出图。
+ *
+ * 随机数来自 core/prng.ts。以前这里复制过一份，理由是「避免把完整 demo
+ * 拉进首屏 chunk」；但 prng.ts 只有十几行、不带任何依赖，单独成模块
+ * 并不会牵出 core/demo.ts 的数据代码，而复制的那份迟早会和示例数据漂移。
  */
 
-/** 与 core/demo.ts 相同的确定性 PRNG，复制而非 import，避免把完整 demo
- *  拉进首屏 chunk。 */
-function xorshift32(seed: number): () => number {
-  let x = seed >>> 0;
-  return () => {
-    x ^= x << 13;
-    x >>>= 0;
-    x ^= x >>> 17;
-    x ^= x << 5;
-    x >>>= 0;
-    return x / 0x100000000;
-  };
-}
+import { xorshift32 } from "../core/prng.js";
 
 const BASES = "ACGT";
 

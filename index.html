@@ -67,7 +67,7 @@ try {
     <!-- 首屏的活点阵：页面加载后自动跑一次真实比对，把结果画进来。
          访客不用点任何按钮就能看到这工具产出什么。 -->
     <figure class="hero-fig">
-      <canvas id="heroPlot" class="hero-plot" aria-label="示例基因组的点阵图"></canvas>
+      <canvas id="heroPlot" class="hero-plot" aria-label="示例基因组的点阵图" data-i18n-aria="hero.plot.aria"></canvas>
       <div class="hero-legend">
         <div class="lg-title" data-i18n="hero.legend.title">这张图怎么读</div>
         <div class="lg-list">
@@ -138,7 +138,7 @@ try {
         <span class="dot" id="figDot"></span>
         <span id="figTitle" data-i18n="fig.title.empty">尚无数据</span>
         <span class="right">
-          <button class="zoomchip" id="figZoom" hidden title="恢复到完整视图">1×</button>
+          <button class="zoomchip" id="figZoom" hidden title="恢复到完整视图" data-i18n-title="fig.zoom.reset">1×</button>
           <span><b id="figSize">—</b> Mbp</span>
           <span>k=<b id="figK">—</b></span>
           <span><b id="figTime">—</b> s</span>
@@ -147,7 +147,7 @@ try {
       <div class="fig-grid">
         <div class="ylab" id="ylab">Query · Mbp</div>
         <div class="plotbox">
-          <canvas id="plot"></canvas>
+          <canvas id="plot" aria-label="比对结果的点阵图" data-i18n-aria="plot.aria"></canvas>
           <div class="empty" id="plotEmpty">
             <div class="empty-t" data-i18n="empty.t">还没有比对结果</div>
             <div class="empty-s" data-i18n="empty.s">打开示例数据，或拖入自己的两个 FASTA</div>

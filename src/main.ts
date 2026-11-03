@@ -2,9 +2,8 @@ import "./styles/app.css";
 import { parseFasta, autoParams } from "./core/fasta.js";
 import { makeDemo, demoCaption, type Demo } from "./core/demo.js";
 import type { Sequence, Segment } from "./core/types.js";
-import { drawPlot, invertPointer, pointerFraction, viewFromDrag, zoomView, zoomFactor, isZoomed, fullView, type PlotState, type View } from "./ui/plot.js";
+import { drawPlot, invertPointer, pointerFraction, viewFromDrag, zoomView, zoomFactor, isZoomed, fullView, type PlotInput, type PlotState, type View } from "./ui/plot.js";
 import type { RunRequest, RunReply, RunSuccess } from "./ui/worker.js";
-import { startGlyph } from "./ui/glyph.js";
 import { makeHeroDemo } from "./ui/hero-demo.js";
 import { initTheme } from "./ui/theme.js";
 import { t, lang, initLang, onLangChange } from "./i18n.js";
@@ -443,11 +442,41 @@ function paintTable(segs: readonly Segment[], _nRef: number): void {
 
 /* ----------------------------------------------------------------- hover */
 
+/**
+ * 悬停读数与拖框。
+ *
+ * mousemove 每秒能来一百多次，每来一次就写一次 innerHTML，等于每个像素
+ * 都让浏览器重新解析一遍这段标记——而中间的若干次根本来不及重绘。
+ * 所以这里只把事件里拿到的坐标记下来，真正的换算和写入留到下一帧，
+ * 一帧最多一次；getBoundingClientRect() 也就在同一处读一次。
+ *
+ * 坐标没变就什么也不做：指针停着不动时重复写同样的内容，还是要走一遍样式重算。
+ */
+let hoverPending = false;
+/** 待处理的指针位置（视口坐标）；事件里只读 clientX/Y，不读 rect。 */
+let hoverX = 0;
+let hoverY = 0;
+/** 上一帧实际画出来的画布内坐标，用来跳过原地抖动。 */
+let hoverLastX = Number.NaN;
+let hoverLastY = Number.NaN;
+
 el.plot.addEventListener("mousemove", (ev) => {
   if (S.geom === null || S.result === null) return;
+  hoverX = ev.clientX;
+  hoverY = ev.clientY;
+  if (hoverPending) return;
+  hoverPending = true;
+  requestAnimationFrame(paintHover);
+});
+
+function paintHover(): void {
+  hoverPending = false;
+  if (S.geom === null) return;
+
+  // 每帧一次 —— 这个读法会强制一次布局，在 mousemove 里读就是每个事件一次。
   const rect = el.plot.getBoundingClientRect();
-  const px = ev.clientX - rect.left;
-  const py = ev.clientY - rect.top;
+  const px = hoverX - rect.left;
+  const py = hoverY - rect.top;
 
   if (drag !== null) {
     drag.x1 = px;
@@ -455,6 +484,11 @@ el.plot.addEventListener("mousemove", (ev) => {
     paintDragRect();
     return;
   }
+
+  // 比的是画布内坐标而不是视口坐标：页面滚动时指针没动，读数却该跟着走。
+  if (px === hoverLastX && py === hoverLastY) return;
+  hoverLastX = px;
+  hoverLastY = py;
 
   const pos = invertPointer(S.geom, px, py);
   if (pos === null) {
@@ -465,13 +499,15 @@ el.plot.addEventListener("mousemove", (ev) => {
   el.readout.hidden = false;
   el.readout.style.left = px + "px";
   el.readout.style.top = py + "px";
-  el.readout.innerHTML =
-    `ref <b>${fmtPos(pos.r)}</b><br>qry <b>${fmtPos(pos.q)}</b>`;
+  el.readout.innerHTML = `ref <b>${fmtPos(pos.r)}</b><br>qry <b>${fmtPos(pos.q)}</b>`;
   el.plot.style.cursor = "crosshair";
-});
+}
 
 el.plot.addEventListener("mouseleave", () => {
   el.readout.hidden = true;
+  // 指针离开后位置记忆要作废，否则回到同一个点时会被当成「没变」而不重画。
+  hoverLastX = Number.NaN;
+  hoverLastY = Number.NaN;
   if (drag === null) el.plot.style.cursor = "";
 });
 
@@ -555,22 +591,59 @@ el.plot.addEventListener("dblclick", () => {
  * Ctrl/Cmd is not required: on a figure whose only interaction is looking
  * closer, the wheel is unambiguously a zoom, and requiring a modifier would
  * make it undiscoverable.
+ *
+ * 合并到帧：一次滚动能连发十几个 wheel 事件，每个都重绘一遍图纯属浪费，
+ * 中间那些帧根本不会被看到。所以事件里只累加、记录指针位置，重绘留到下一帧。
+ *
+ * 三个容易写错的细节：
+ *  1. preventDefault() 必须在事件里同步调用。挪进 rAF 就晚了，页面会滚动。
+ *  2. deltaY 要累加，并且要认 deltaMode。不同设备报的单位不同：line 模式
+ *     一格约 3，page 模式一格约一屏，跟像素模式差几十倍；不换算的话，
+ *     同一个手势在触控板和外接鼠标上缩放速度天差地别。
+ *  3. getBoundingClientRect() 每帧最多一次。它在 rAF 里读，不在事件里读，
+ *     免得每个事件都强制一次布局。
  */
+let wheelPending = false;
+let wheelDeltaY = 0;
+/** 最后一次指针的视口坐标；换算留到 rAF，好让 rect 每帧只读一次。 */
+let wheelClientX = 0;
+let wheelClientY = 0;
+
 el.plot.addEventListener(
   "wheel",
   (ev) => {
     if (S.geom === null || S.result === null) return;
     ev.preventDefault();
-    const rect = el.plot.getBoundingClientRect();
-    const f = pointerFraction(S.geom, ev.clientX - rect.left, ev.clientY - rect.top);
-    if (f === null) return;
-    const s = S.result.stats;
-    const factor = Math.exp(ev.deltaY * 0.0016);
-    S.view = zoomView(S.view ?? fullView(s.nRef, s.nQry), f.fx, f.fy, factor, s.nRef, s.nQry);
-    redraw();
+
+    // deltaMode 1 = line（Firefox 默认单位），一格约 3；换算成像素才和
+    // 触控板的 deltaMode 0 同量级，否则同一个手势快慢差几十倍。
+    wheelDeltaY += ev.deltaMode === 1 ? ev.deltaY * 16 : ev.deltaY;
+    wheelClientX = ev.clientX;
+    wheelClientY = ev.clientY;
+
+    if (wheelPending) return;
+    wheelPending = true;
+    requestAnimationFrame(applyWheelZoom);
   },
   { passive: false },
 );
+
+function applyWheelZoom(): void {
+  wheelPending = false;
+  const d = wheelDeltaY;
+  wheelDeltaY = 0;
+  if (S.result === null || S.geom === null || d === 0) return;
+
+  // 每帧一次 —— 这个读法会强制一次布局，放在事件里就是每个事件一次。
+  const rect = el.plot.getBoundingClientRect();
+  const f = pointerFraction(S.geom, wheelClientX - rect.left, wheelClientY - rect.top);
+  if (f === null) return;
+
+  const s = S.result.stats;
+  const factor = Math.exp(d * 0.0016);
+  S.view = zoomView(S.view ?? fullView(s.nRef, s.nQry), f.fx, f.fy, factor, s.nRef, s.nQry);
+  redraw();
+}
 
 el.figZoom.addEventListener("click", () => {
   if (S.result === null) return;
@@ -788,6 +861,43 @@ refreshRunButton();
 /* ------------------------------------------------------- hero plot */
 
 /**
+ * 首屏图的重绘状态。
+ *
+ * 为什么不能只存 PlotState：那里面只有几何（pad/inner/width/view），
+ * 没有点和坐标轴范围——拿它画不出第二遍。worker 在收到结果后就被 terminate，
+ * reply.pts 当时用完即弃，所以必须在这里把整份 PlotInput 留住。
+ *
+ * 内存代价：首屏样本 90k × 115k bp，autoParams 得 k=13、w=8，
+ * 约 25,556 个种子 × 9 字节 ≈ 0.22 MB。留着它是划算的。
+ */
+interface HeroState {
+  canvas: HTMLCanvasElement;
+  /** 完整保留，含 pts —— 重绘要的正是它。 */
+  input: PlotInput;
+  counts: { col: number; inv: number; trn: number };
+  elapsed: number;
+}
+
+let heroState: HeroState | null = null;
+
+/** 重画首屏图。没有结果时什么也不做。 */
+function repaintHero(): void {
+  if (heroState === null) return;
+  drawPlot(heroState.canvas, heroState.input);
+}
+
+/**
+ * 换配色之后的重画入口。
+ *
+ * redraw() 只管工具区的 #plot，首屏那张图不在它的视野里——这是既存的一个 bug：
+ * 切完主题往下滚，首屏图还是上一套颜色。
+ */
+function repaintAll(): void {
+  redraw();
+  repaintHero();
+}
+
+/**
  * 首屏点阵图。
  *
  * 在独立 worker 里跑一小对合成基因组，结果画进 #heroPlot。
@@ -796,7 +906,6 @@ refreshRunButton();
  */
 function startHeroPlot(): void {
   const canvas = document.getElementById("heroPlot") as HTMLCanvasElement | null;
-  const meta = document.getElementById("heroMeta");
   if (canvas === null) return;
 
   const run = (): void => {
@@ -817,23 +926,26 @@ function startHeroPlot(): void {
         ?? reply.segs.find((x) => x.type === "trn")
         ?? null;
 
-      drawPlot(canvas, {
-        pts: reply.pts,
-        nRef: s.nRef,
-        nQry: s.nQry,
-        view: fullView(s.nRef, s.nQry),
-        highlight: seg,
-      });
+      const counts = { col: 0, inv: 0, trn: 0 };
+      for (const sg of reply.segs) counts[sg.type] += 1;
 
+      // 保住整份输入，之后换主题、切语言、改窗口大小都靠它重画。
+      heroState = {
+        canvas,
+        input: {
+          pts: reply.pts,
+          nRef: s.nRef,
+          nQry: s.nQry,
+          view: fullView(s.nRef, s.nQry),
+          highlight: seg,
+        },
+        counts,
+        elapsed: s.elapsed,
+      };
+
+      repaintHero();
       canvas.classList.add("ready");
-
-      if (meta !== null) {
-        const counts = { col: 0, inv: 0, trn: 0 };
-        for (const sg of reply.segs) counts[sg.type] += 1;
-        meta.textContent =
-          `${counts.col} 共线 · ${counts.inv} 倒位 · ${counts.trn} 易位` +
-          ` · ${(s.elapsed / 1000).toFixed(2)} s`;
-      }
+      paintHeroMeta();
     };
 
     heroWorker.onerror = (): void => {
@@ -859,15 +971,50 @@ function startHeroPlot(): void {
   }
 }
 
-const glyph = document.getElementById("glyph") as HTMLCanvasElement | null;
-if (glyph !== null) startGlyph(glyph);
+/** 首屏图下面那行统计。走词表，否则切到英文时只有它还是中文。 */
+function paintHeroMeta(): void {
+  const meta = document.getElementById("heroMeta");
+  if (meta === null || heroState === null) return;
+  const { col, inv, trn } = heroState.counts;
+  meta.textContent = t("hero.meta", {
+    col,
+    inv,
+    trn,
+    t: (heroState.elapsed / 1000).toFixed(2),
+  });
+}
+
+/**
+ * 首屏 canvas 的尺寸观察。
+ *
+ * 工具区那块（#plot）一直有 ResizeObserver；首屏这块是批次一才补上的，
+ * 因为在这之前它画完就再也不会重画——窗口改大之后，画布被拉伸成糊的。
+ *
+ * 只观察布局尺寸，不理会 transform：ResizeObserver 报的是布局盒，
+ * 批次二的滚动缩放用 transform 实现，不会触发这里。
+ */
+const heroCanvas = document.getElementById("heroPlot") as HTMLCanvasElement | null;
+if (heroCanvas !== null) {
+  let heroW = 0;
+  let heroH = 0;
+  const heroRo = new ResizeObserver((entries) => {
+    const box = entries[0]?.contentRect;
+    if (box === undefined || box.width < 10 || box.height < 10) return;
+    if (Math.abs(box.width - heroW) < 0.5 && Math.abs(box.height - heroH) < 0.5) return;
+    heroW = box.width;
+    heroH = box.height;
+    if (heroState !== null) repaintHero();
+  });
+  heroRo.observe(heroCanvas);
+}
 
 // 首屏点阵图：加载后自动跑一次小样本比对，让访客立刻看到产出。
 // 放在 idle 回调里，先让标题和文案渲染完再算，避免拖慢首屏。
 startHeroPlot();
 
 // 换配色后必须重画：画布上的颜色是从 CSS 变量算出来的，不会自己跟着变。
-initTheme(redraw);
+// 首屏那张图同样要重画，所以走 repaintAll。
+initTheme(repaintAll);
 
 // 换语言只需重刷文字，不必重算比对：结构没变，变的只是说法。
 // 首次对齐不重绘——那时中文原文就在标记里，用词表再写一遍只会引入细微差异。
@@ -884,6 +1031,8 @@ onLangChange(() => {
   }
   refreshRunButton();
   paintAxes();
+  // 首屏图的那行统计是脚本拼的，和工具区的文案一样要跟着换。
+  paintHeroMeta();
 });
 
 // 按钮的显隐由 initLang 自己负责，这里不再重复处理。

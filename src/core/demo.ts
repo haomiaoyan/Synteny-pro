@@ -1,4 +1,5 @@
 import type { Sequence } from "./types.js";
+import { xorshift32 } from "./prng.js";
 
 /**
  * Synthetic demo genomes with a known structural history.
@@ -21,19 +22,6 @@ import type { Sequence } from "./types.js";
  * The reference is a chain of blocks separated by non-homologous spacers; the
  * query is that chain rearranged. Sizes vary so the diagonal is not a ruler.
  */
-
-/** xorshift32; deterministic so the demo is the same on every load. */
-function rng(seed: number): () => number {
-  let s = seed >>> 0 || 1;
-  return () => {
-    s ^= s << 13;
-    s >>>= 0;
-    s ^= s >>> 17;
-    s ^= s << 5;
-    s >>>= 0;
-    return s / 4294967296;
-  };
-}
 
 const A = "ACGT";
 
@@ -129,7 +117,7 @@ const LAYOUT: Array<{ kb: number; fate: "same" | "invert" | "move" | "dup" }> = 
 const SPACERS = [4_000, 9_000, 6_000, 7_500, 5_000, 8_000, 11_000];
 
 export function makeDemo(): Demo {
-  const rnd = rng(20261028);
+  const rnd = xorshift32(20261028);
 
   // ---- reference: blocks in order, separated by unique spacers ------------
   const blocks: Array<{ seq: string; r0: number; r1: number }> = [];
