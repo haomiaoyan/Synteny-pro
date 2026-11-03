@@ -679,12 +679,30 @@ p.standfirst b { color: var(--paper); font-weight: 600; }
   font-family: -apple-system, "PingFang SC", sans-serif;
   border: 1px solid var(--accent);
   cursor: pointer;
-  transition: background .18s ease;
+  /* transform 也进过渡：按下时要立刻收，松手要弹回来。
+     回弹比按下慢一点，手感才像有重量而不是开关。 */
+  transition: background .18s ease, transform .12s ease;
 }
 
 .btn:hover:not(:disabled) { background: #a83609; }
 
+/* 按下反馈。只动 transform，不动 padding/宽度——那些是布局属性，
+   按下时改会让按钮周围的内容跟着跳。scale(.97) 在 46px 高的按钮上
+   约等于内收 0.7px，看得见但不夸张。
+
+   :active 在触屏上同样成立，所以手指按下去也有反馈。 */
+.btn:active:not(:disabled) {
+  transform: scale(.97);
+  /* 按下时过渡更短：松手立刻回位，按下的「压下去」也要跟手。 */
+  transition-duration: .06s;
+}
+
 .btn:disabled { opacity: .38; cursor: not-allowed; }
+
+/* 减少动效时不缩放——位移本身就是这一层要传达的东西。 */
+@media (prefers-reduced-motion: reduce) {
+  .btn:active:not(:disabled) { transform: none; }
+}
 
 .btn2 { background: transparent; border-color: var(--rule2); color: var(--paper); }
 
@@ -1099,7 +1117,12 @@ td.id { font-family: ui-monospace, Menlo, monospace; color: var(--paper); }
   cursor: pointer;
   padding: 4px 0;
   border-bottom: 1px solid transparent;
+  /* 文字按钮不做缩放：scale 会把字挤糊，而且下划线会跟着抖。
+     它用「按下时下划线实心」来反馈，那本来就是它的 hover 语言。 */
+  transition: border-color .12s ease, color .12s ease;
 }
+
+.link:active:not(:disabled) { border-bottom-color: var(--accent-soft); }
 
 .link:hover:not(:disabled) { border-bottom-color: var(--accent-soft); }
 
