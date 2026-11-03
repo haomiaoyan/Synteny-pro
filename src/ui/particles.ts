@@ -390,30 +390,38 @@ export function startParticles(canvas: HTMLCanvasElement, opts: ParticleOptions 
    * 几何只在有指针时读，且读在所有绘制之前：这一帧最多一次布局读取，不会在
    * 写样式之后再把布局强制刷新一遍。
    *
-   * 「可以停」有两套判据，取决于指针在不在：
+   * 「可以停」的判据**逐颗**决定，看的是这颗粒子这一帧有没有真的被推：
    *
-   *   - 指针不在（或被推开后离开）：必须**每颗都吸附回家**才算完。只看速度
-   *     是不够的——速度掉到阈值以下那一刻，粒子可能还差零点几像素没到位，
-   *     此时收工，它就会永久停在那个偏移上，「静止画面」于是和首帧不完全一样。
-   *   - 指针按住不动：粒子会停在推力与弹簧相等的位置（离开家几十像素），
-   *     速度归零。这时只能按速度收工，否则鼠标停在标题上一整天，这一层就
-   *     跟着空转一整天。指针再动一下就会重新唤醒。
+   *   - 没被推（不在 120px 半径内）：弹簧会把它送回 `hx/hy`，必须**吸附到位**
+   *     才算完。只看速度是不够的——速度掉到阈值以下那一刻，粒子可能还差一大截
+   *     没走完，此时收工它就永久停在半路，「静止画面」于是和首帧不一致。
+   *     实测（离线复算）：被推开 11.66px 时速度先到阈，此刻仍差 0.96px；
+   *     推开 40px 差 3.31px；推开 200px 差 16.56px。
+   *   - 正在被推（在半径内）：它会被推到「推力 = 弹簧」的平衡位移上（离家
+   *     30–40px），速度在那里归零。这时只能按速度收工，否则鼠标停在标题上
+   *     一整天，这一层就跟着空转一整天。指针一动就会重新唤醒。
+   *
+   * 注意这里的豁免是**逐颗**的，不是「有没有指针」：指针只要进过窗口，
+   * `pointer.on` 就会一直为真（只有文档级 pointerleave / blur 才清），
+   * 拿它当豁免条件等于让「没被推的粒子」也享受平衡态豁免——那正好把上面
+   * 第一条要防的「永久停在半路」又请了回来。
    */
   const step = (): boolean => {
     const rect = interactive && pointer.on ? canvas.getBoundingClientRect() : null;
     const px = rect === null ? 0 : pointer.clientX - rect.left;
     const py = rect === null ? 0 : pointer.clientY - rect.top;
     const max2 = POINTER_RADIUS * POINTER_RADIUS;
-    // 指针这一帧还在按着：允许「停在平衡位移」收工。
-    const held = rect !== null;
 
     let busy = false;
     for (const p of active) {
+      // 这一颗本帧是否真的被推。判据就下面那个 d2，不掺任何全局状态。
+      let pushed = false;
       if (rect !== null) {
         const dx = p.x - px;
         const dy = p.y - py;
         const d2 = dx * dx + dy * dy;
         if (d2 < max2) {
+          pushed = true;
           const d = Math.sqrt(d2);
           // 线性衰减：贴着鼠标时最大，到 120px 处正好为 0。
           // d 可能为 0（鼠标正落在粒子上），除法前先托住。
@@ -442,8 +450,8 @@ export function startParticles(canvas: HTMLCanvasElement, opts: ParticleOptions 
         continue;
       }
       if (!slow) busy = true;
-      // 指针没按着却不靠近家：说明还在回弹路上，必须继续跑，直到吸附。
-      else if (!held) busy = true;
+      // 没被推却不靠近家：说明还在回弹路上，必须继续跑，直到吸附。
+      else if (!pushed) busy = true;
     }
     return busy;
   };

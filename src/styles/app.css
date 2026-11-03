@@ -273,9 +273,10 @@ a { color: inherit; text-decoration: none; }
    pointer-events: none 是必须的：canvas 铺满整块首屏，不关掉命中测试，
    图例的悬停、点阵图的缩放拖动全部会被它吞掉。
 
-   width/height 必须显式写满：canvas 是替换元素，有 300×150 的固有尺寸。
-   只写 inset: 0 时绝对定位的替换元素会用固有尺寸而不是拉伸到四边，
-   实际得到一块 300×150 的补丁——首屏上看着「有粒子」，验收时尺寸对不上。 */
+   width/height 在这里是**冗余的**：全局 `canvas { display:block; width:100%;
+   height:100% }`（app.css:720）已经把它撑满了。保留这两个声明只是让这条
+   规则自己说完整，读的人不必翻到下面去找那条全局规则；不是因为不写就会
+   得到 300×150 的补丁——实测（把这两行注释掉重建）尺寸仍然正确。 */
 .head-canvas {
   position: absolute;
   inset: 0;
