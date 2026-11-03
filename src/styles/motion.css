@@ -11,16 +11,44 @@
    包在 `.specstrip` 上一次淡入，只会数成 1 个。
 
    ---------------------------------------------------------------------
+   生命周期：.reveal → .reveal.in → .reveal.in.done
+   ---------------------------------------------------------------------
+   `.reveal` 由 reveal.ts 加上，此后**永不摘除**（销毁函数在 main.ts 里被丢弃，
+   这一层与页面同寿）。所以任何挂在 `.reveal` 上的东西都会一直生效。
+   入场结束后只摘 `.reveal` 不够，也不能指望它消失——必须另有一个「结束」状态。
+
+   `.done` 就是这个状态，由 reveal.ts 在入场过渡确实跑完之后补上。
+   隐藏态、入场过渡、错开延迟**全部**收在 `:not(.done)` 里，于是：
+
+   - 入场期间：`.reveal:not(.done)` 生效，元素从 opacity:0 / translateY(16px)
+     过渡到可见，错开延迟按 nth-child 生效；
+   - 入场之后：`.done` 一加，那三条规则一起失效。延迟归零，过渡声明也没了，
+     元素的 transition 回到 app.css 里它自己那条（或没有）——
+     批次五给 `.lg-item` 加 hover 过渡时，不会继承我的 70/140ms 延迟，
+     也不会被我的 transition 简写覆盖掉。
+
+   为什么不用「`.reveal` 前缀」来隔离（那是我第一版的错）：
+   `.reveal.lg-item:nth-child(2)` 里的 `.reveal` 只是提高选择器权重的普通类，
+   `.reveal` 一直在，这条规则就一直在匹配。**前缀不是作用域**。
+   同理，`.reveal { transition: ... }` 这条简写会把 `.lg-item` 自己的
+   transition 整条覆盖掉（同为 (0,1,0)，本文件在后），批次五的 hover 会从
+   渐变变成瞬变——这正是 `.slot` 当初遇到的问题（见文件末尾）。
+   `:not(.done)` 才是真的作用域：它随状态消失而失效。
+
+   ---------------------------------------------------------------------
    隐藏态必须写在 @media (prefers-reduced-motion: no-preference) 里面
    ---------------------------------------------------------------------
-   写成「外面 opacity:0，靠 transition 撤销」，在减弱动效下就是
-   永久不可见：transition 被 app.css 末尾那条 `transition-duration:.001ms`
-   抹平，隐藏态却还在。检查器 reduced-hidden（inspect.mjs:244-259）
-   会在 1440px 下扫首屏文字，抓到两个以上就 FAIL。
-   规则名是 reduced-hidden，没有叫 revealed-text 的规则。
+   写成「外面 opacity:0，靠 transition 撤销」，在减弱动效下就是永久不可见：
+   transition 被 app.css 末尾那条 `transition-duration:.001ms` 抹平，
+   隐藏态却还在。检查器 reduced-hidden（inspect.mjs:244-259）会在 1440px 下
+   扫首屏文字，抓到两个以上就 FAIL。规则名是 reduced-hidden，
+   没有叫 revealed-text 的规则。
 
    把整段规则关进 no-preference 之后，减弱动效下这些选择器**根本不存在**，
    页面直接就是完成态——不需要第二条 reduce 规则去撤销任何东西。
+   这也意味着：如果用户在入场途中打开「减弱动效」，隐藏态瞬时消失、
+   元素立刻可见，而 `.done` 可能永远不会到——这没问题，因为
+   **隐藏只存在于这条 media query 之内**。
 
    ---------------------------------------------------------------------
    为什么这里绝不能碰 .body-grid / #method / #limits / .note
@@ -34,9 +62,9 @@
    ========================================================================= */
 
 @media (prefers-reduced-motion: no-preference) {
-  /* 入场：隐藏态。只改 opacity / transform——两者都不触发布局，
-     整段动画走合成线程，滚动时不会掉帧。 */
-  .reveal {
+  /* 入场：隐藏态 + 入场过渡。只在 `.done` 之前存在。
+     只改 opacity / transform——两者都不触发布局，整段动画走合成线程。 */
+  .reveal:not(.done) {
     opacity: 0;
     transform: translateY(16px);
     transition: opacity .5s, transform .5s;
@@ -50,29 +78,42 @@
     transform: none;
   }
 
+  /* 入场结束。这条只能让元素**更可见**（1 / none），
+     所以「`.done` 加早了」不会藏起任何东西——它是个安全的方向。
+     作用是让上面两条（隐藏态、过渡、下面的延迟）一起失效。 */
+  .reveal.done {
+    opacity: 1;
+    transform: none;
+  }
+
   /* 加载时就进场的三块用一个很轻的错开，让它们有先后而不是齐步走。
      延迟压在 200ms 以内：总共不超过 .7s，检查器在 1.2s 时读标题，
      画面已经稳定。
-     用 `.reveal.` 前缀而不是裸 `.lg-item:nth-child(2)`：批次五会把
-     `.lg-item` 换成 <button> 并加自己的 hover 过渡，那时这条
-     transition-delay 若不设防地挂在 `.lg-item` 上，会把 hover 反馈
-     也一起延迟——它只该管入场。 */
-  .reveal.lg-item:nth-child(2) { transition-delay: 70ms; }
-  .reveal.lg-item:nth-child(3) { transition-delay: 140ms; }
 
-  /* 四个规格条滚进视口时是并排一起出现的，错开 60ms 一级就够看出顺序。 */
-  .reveal.spec:nth-child(2) { transition-delay: 60ms; }
-  .reveal.spec:nth-child(3) { transition-delay: 120ms; }
-  .reveal.spec:nth-child(4) { transition-delay: 180ms; }
+     必须带 `:not(.done)`：`.reveal` 和 `.in` 都永不摘除，光靠它们
+     这条 `transition-delay` 会一直匹配下去，把该元素**所有**属性的过渡
+     都拖慢 70/140ms——包括批次五将给 `.lg-item` 加的 hover 反馈。
+     收进 `:not(.done)` 之后，入场一结束它就失效。 */
+  .reveal.in:not(.done).lg-item:nth-child(2) { transition-delay: 70ms; }
+  .reveal.in:not(.done).lg-item:nth-child(3) { transition-delay: 140ms; }
+
+  /* 四个规格条滚进视口时是并排一起出现的，错开 60ms 一级就够看出顺序。
+     同样收在 `:not(.done)` 里，理由同上。 */
+  .reveal.in:not(.done).spec:nth-child(2) { transition-delay: 60ms; }
+  .reveal.in:not(.done).spec:nth-child(3) { transition-delay: 120ms; }
+  .reveal.in:not(.done).spec:nth-child(4) { transition-delay: 180ms; }
 
   /* 抵消一次级联覆盖，不是为了加动效。
      `.slot` 在 app.css:485 自带 `transition: border-color, background`。
-     本文件在 app.css 之后引入（见 main.ts 顶部注释），两条规则同为
-     (0,1,0)，`.reveal` 的 transition 会把那条整条覆盖掉——文件槽的
-     hover 反馈会从渐变变成瞬变。
-     这里用 (0,2,0) 把两组合并回去。四个值必须与 app.css:485 一致；
+     `.reveal:not(.done)` 的 transition 简写与它同为 (0,1,0)，本文件在后，
+     会把那条整条覆盖掉——文件槽的 hover 反馈会从渐变变成瞬变。
+     这里用更高权重把两组合并回去。
+
+     只在 `:not(.done)` 期间需要：`.done` 一加，`.reveal` 的简写就失效，
+     `.slot` 自己那条原样恢复，不需要这里再维护一份。所以四个值
+     与 app.css:485 的一致性**只在入场那不到一秒里**有意义。
      改那边的时间要同步改这里。 */
-  .slot.reveal {
+  .slot.reveal:not(.done) {
     transition:
       opacity .5s,
       transform .5s,
