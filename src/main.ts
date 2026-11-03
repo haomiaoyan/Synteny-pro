@@ -8,6 +8,7 @@ import { makeHeroDemo } from "./ui/hero-demo.js";
 import { initTheme } from "./ui/theme.js";
 import { t, lang, initLang, onLangChange } from "./i18n.js";
 import { downloadPng } from "./ui/export.js";
+import { initScrollZoom, isScrollZoomActive, onScrollZoomReset } from "./ui/scroll-zoom.js";
 
 /**
  * Page controller.
@@ -320,6 +321,10 @@ function redraw(): void {
     highlight: seg,
   });
   paintAxes();
+  // 重画之后画布内坐标到基因组坐标的映射已经变了，上一帧记下的指针位置不再可比。
+  // 不作废的话，指针停在原地不动时缩放/复位后的读数会一直沿用旧的换算。
+  hoverLastX = Number.NaN;
+  hoverLastY = Number.NaN;
 }
 
 /** Axis titles must name the unit the tick labels are actually in. */
@@ -880,10 +885,114 @@ interface HeroState {
 
 let heroState: HeroState | null = null;
 
+/**
+ * 首屏图欠下的那次重画。
+ *
+ * 为什么需要它：滚动缩放给 `.hero-fig` 挂了 transform，而 drawPlot 是拿
+ * `getBoundingClientRect()`（plot.ts:141-142）当画布尺寸的——缩放期间那返回的是
+ * **变换后**的盒子，照着画就会在已缩小的画面上再缩一次，越滚越小。
+ *
+ * 为什么 ResizeObserver 兜不住：RO 观察的是**布局盒**。transform 不改布局尺寸，
+ * 所以缩放不会触发 RO；RO 只在真实 resize 时报，那时同样会踩上双重缩放。
+ * 换句话说「等 RO 来修」是错的，只能延后到缩放撤掉之后再画。
+ */
+let heroDirty = false;
+
+/** 2 秒兜底用的 idle 句柄；0 表示没有排队。 */
+let heroIdle = 0;
+/** setTimeout 兜底句柄；0 表示没有排队。 */
+let heroTimer = 0;
+
+/**
+ * 置脏后的 2 秒兜底。
+ *
+ * 这是「三重兑现」的第 2 条。用户完全可能切完主题就一直停在工具区，不滚回、
+ * 也不再有任何 repaintAll 的机会，首屏图会永久停在旧颜色。
+ *
+ * 兜底响的时候缩放**一定**还挂着（置脏就发生在那时），所以不能走普通重绘路径
+ * ——那会读到变换后的盒子、双重缩放。改用 paintHeroByLayout()：拿布局盒当尺寸，
+ * 画出来的仍是正确的一张。这样「2 秒内必有一帧」才真的成立，而不是一句空话。
+ *
+ * 只排一份、响过就不再排：重画一旦落笔（无论走哪条路径）都会 cancelHeroFallback，
+ * 下一次置脏再重新排。
+ */
+function scheduleHeroFallback(): void {
+  if (heroIdle !== 0 || heroTimer !== 0) return;
+  // 沿用 startHeroPlot() 里同一个特性检测写法，不另造一套。
+  if ("requestIdleCallback" in window) {
+    heroIdle = (window as Window & {
+      requestIdleCallback: (cb: () => void, opts?: { timeout: number }) => number;
+    }).requestIdleCallback(() => {
+      heroIdle = 0;
+      if (heroDirty) paintHeroByLayout();
+    }, { timeout: 2000 });
+    return;
+  }
+  heroTimer = setTimeout(() => {
+    heroTimer = 0;
+    if (heroDirty) paintHeroByLayout();
+  }, 2000);
+}
+
+/** 撤掉还在排队的那份兜底。重画成功之后它已经没有意义。 */
+function cancelHeroFallback(): void {
+  if (heroIdle !== 0) {
+    (window as Window & { cancelIdleCallback?: (id: number) => void })
+      .cancelIdleCallback?.(heroIdle);
+    heroIdle = 0;
+  }
+  if (heroTimer !== 0) {
+    clearTimeout(heroTimer);
+    heroTimer = 0;
+  }
+}
+
+/**
+ * 兜底专用的一次落笔：用**布局盒**当尺寸，绕开 `getBoundingClientRect()`。
+ *
+ * 为什么不能用普通路径：普通路径不传 size，drawPlot 只能自己读 rect，而缩放期间
+ * 那是变换后的盒子——正是在这种场景下会双重缩放，所以守卫拦着不让画。
+ * 但「2 秒内必有一帧」是 SDS §4.5.6 明写的要求，不能因为守卫就落空。
+ *
+ * 出路是 drawPlot 早就支持显式 `size`（plot.ts:120-127、138）：offsetWidth /
+ * offsetHeight 是**布局**尺寸，transform 完全不改它。传进去之后画出来的就是
+ * 未缩放时该有的那一张，画布分辨率始终正确——既兑现了 2 秒兜底，又不会越缩越小。
+ *
+ * 这也说明「除回 scale」那条顾虑不成立：这里不做任何除法，只是换了一个不变量。
+ */
+function paintHeroByLayout(): void {
+  if (heroState === null) return;
+  const canvas = heroState.canvas;
+  const w = canvas.offsetWidth;
+  const h = canvas.offsetHeight;
+  if (w < 10 || h < 10) return; // 被折叠或还没排版，这一轮没得画
+  drawPlot(canvas, heroState.input, {
+    w,
+    h,
+    dpr: Math.min(window.devicePixelRatio || 1, 2),
+  });
+  cancelHeroFallback();
+  heroDirty = false;
+}
+
+/** 兑现欠下的那次重画；仍在缩放中就按兵不动，等归位或下一次 repaintAll。 */
+function flushHero(): void {
+  if (!heroDirty) return;
+  repaintHero();
+}
+
 /** 重画首屏图。没有结果时什么也不做。 */
 function repaintHero(): void {
   if (heroState === null) return;
+  if (isScrollZoomActive()) {
+    heroDirty = true;
+    scheduleHeroFallback();
+    return;
+  }
   drawPlot(heroState.canvas, heroState.input);
+  // 已经画过了，排队中的兜底就成了多余的一次。
+  cancelHeroFallback();
+  heroDirty = false;
 }
 
 /**
@@ -1015,6 +1124,15 @@ startHeroPlot();
 // 换配色后必须重画：画布上的颜色是从 CSS 变量算出来的，不会自己跟着变。
 // 首屏那张图同样要重画，所以走 repaintAll。
 initTheme(repaintAll);
+
+// 首屏图的滚动缩放。没找到元素就整体跳过——首屏是锦上添花，不该拦住工具区。
+const heroFig = document.querySelector(".hero-fig");
+if (heroFig instanceof HTMLElement) {
+  // 三重兑现的第 1 条：归位时补上缩放期间欠下的那次重画。
+  // 用户滚回首屏，正是这张图该恢复成未缩放尺寸的一刻。
+  onScrollZoomReset(flushHero);
+  initScrollZoom(heroFig);
+}
 
 // 换语言只需重刷文字，不必重算比对：结构没变，变的只是说法。
 // 首次对齐不重绘——那时中文原文就在标记里，用词表再写一遍只会引入细微差异。
