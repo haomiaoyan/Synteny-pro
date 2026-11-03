@@ -121,3 +121,19 @@
       background .18s ease;
   }
 }
+
+/* 打印没有「入场」这回事。
+   屏幕上的隐藏态由 `.reveal:not(.done)` 提供，而打印时既不会滚动也不会等定时器——
+   屏下那些还没进过视口的元素，会以 opacity:0 直接印成空白页。
+
+   权重必须写到 (0,3,0) 之上：`.slot.reveal:not(.done)` 是 (0,3,0)，
+   低一档的选择器压不住它，.slot 会留着 translateY 印出去。
+   过渡也一并去掉——打印是快照，不该从隐藏态「播」到可见态。 */
+@media print {
+  .reveal,
+  .reveal.reveal:not(.done) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}

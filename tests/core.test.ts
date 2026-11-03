@@ -5,6 +5,7 @@ import { radixOrder } from "../src/core/radix.js";
 import { buildIndex, lowerBound } from "../src/core/index-ref.js";
 import { parseFasta, autoParams } from "../src/core/fasta.js";
 import { dna, revcomp } from "./fixtures.js";
+import { makeDemo } from "../src/core/demo.js";
 
 describe("hash", () => {
   it("gives a k-mer and its reverse complement the same canonical hash", () => {
@@ -157,5 +158,34 @@ describe("autoParams", () => {
     const { w } = autoParams(50_000, 50_000);
     expect(w).toBeGreaterThanOrEqual(8);
     expect(w).toBeLessThanOrEqual(256);
+  });
+});
+
+/**
+ * demo 用固定种子合成一对基因组，画面每次加载都该一模一样——截图对比、
+ * 首屏那张图、以及「换主题只改颜色不改点阵」这些事都建立在这个前提上。
+ *
+ * 批次一把三份重复的 xorshift32 收敛到 `src/core/prng.ts` 时，正因为没有这条
+ * 守卫，只能靠一次性的 SHA-256 对比来证明输出没变。把它钉成测试之后，
+ * 以后谁动 PRNG 或改种子，这里会立刻红，而不是等到有人肉眼发现图变了。
+ */
+describe("demo determinism", () => {
+  it("produces byte-identical sequences on every call", () => {
+    const a = makeDemo();
+    const b = makeDemo();
+    expect(a.ref.seq).toBe(b.ref.seq);
+    expect(a.qry.seq).toBe(b.qry.seq);
+  });
+
+  it("keeps the pinned fingerprint of the generated input", () => {
+    // 指纹而非整串：整串会让失败输出失控，这个足够在任何一个碱基变化时炸。
+    const fp = (s: string): string => {
+      let h = 0;
+      for (let i = 0; i < s.length; i++) h = (Math.imul(h, 31) + s.charCodeAt(i)) | 0;
+      return `${s.length}:${h >>> 0}`;
+    };
+    const d = makeDemo();
+    expect(fp(d.ref.seq)).toBe("2130000:1236626862");
+    expect(fp(d.qry.seq)).toBe("2251000:4046595280");
   });
 });
